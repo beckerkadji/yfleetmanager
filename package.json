@@ -7,12 +7,14 @@
         "dev": "nodemon src/server.ts",
         "start": "ts-node src/server.ts",
         "tsoa": "tsoa spec-and-routes -c ./tsoa.json",
-        "seed": "ts-node prisma/seed.ts",
-        "prisma:push": "prisma db push"
+        "seed": "ts-node prisma/seed.ts"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "engines": {
+        "node": ">=16"
+    },
     "dependencies": {
         "@joi/date": "^2.1.0",
         "@types/node": "^20.8.7",
