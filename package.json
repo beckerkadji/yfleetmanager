@@ -12,6 +12,9 @@
     "keywords": [],
     "author": "",
     "license": "ISC",
+    "engines": {
+        "node": ">=16"
+    },
     "dependencies": {
         "@joi/date": "^2.1.0",
         "@types/node": "^20.8.7",
