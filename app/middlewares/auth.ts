@@ -23,6 +23,7 @@ export const expressAuthentication = async (
             if (!scopes || scopes && scopes?.length < 0)
             return Promise.resolve(`token here ${token.user}`)
 
+            
             const permissions = token.user.permissions.map(({permission_id}) => permission_id)
 
             for (const scope of scopes){

@@ -13,3 +13,8 @@ export const loginSchema = Joi.object({
     email : schema.email,
     password : schema.password
 })
+
+export const resetPasswordSchema = Joi.object({
+    email : schema.email,
+    password : schema.password
+})

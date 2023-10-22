@@ -21,7 +21,7 @@ class Mailer {
      * @params path String the modele file path (disturbing because if fs )
      */
 
-    async sendFromTemplate(to: string | string[], subject: string, language: string, modelName: string, data?: object): Promise<void> {
+    async sendFromTemplate(to: string | string[], subject: string, language: string, modelName: string, data?: object): Promise<any> {
         try{
             // let message = await this.normalizeModel(modelName, language, data);
             // return await this.send(to, subject, message, language);
@@ -44,7 +44,7 @@ class Mailer {
                     }
                 ]
             })
-            console.log(request)
+            return request
         } catch(error){
             console.log(error);
         }

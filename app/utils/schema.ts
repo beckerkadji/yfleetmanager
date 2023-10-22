@@ -5,7 +5,8 @@ export const schema = {
     password : Joi.string()
         .required()
         .min(8)
-        .pattern(new RegExp(/^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/)),
+        .pattern(new RegExp(/^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})/))
+        .message('Entez un mot de passe contenant des chiffre et lettre'),
     firstName : Joi.string().min(2).required(),
     lastName : Joi.string().min(2).optional(),
     phone : Joi.string().required().min(9),

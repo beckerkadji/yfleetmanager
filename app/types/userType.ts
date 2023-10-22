@@ -2,6 +2,7 @@ import { ROLE_HR } from "../models/role"
 import { defaultEmail } from "./defaults/email.types"
 import { defaultFisrtName } from "./defaults/firstName.type"
 import { defaultLastName } from "./defaults/lastName.type"
+import { defaultOtp } from "./defaults/otp.type"
 import { defaultPhone } from "./defaults/phone.type"
 
 declare namespace UserType {
@@ -17,6 +18,24 @@ declare namespace UserType {
     export interface loginFields {
         email: defaultEmail,
         password : string
+    }
+
+    export interface forgotPasswordFields {
+        phone: defaultPhone,
+    }
+
+    export interface resetPasswordFields {
+        email: defaultEmail,
+        password: string
+    }
+
+    export interface verifyOtp {
+        email: defaultEmail,
+        otp: defaultOtp
+    }
+
+    export interface resendOtp {
+        email: defaultEmail,
     }
 }
 export default UserType

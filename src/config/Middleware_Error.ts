@@ -4,6 +4,7 @@ export class Middleware_Error extends Error{
         super(error);
         this.message = error
         Object.setPrototypeOf(this, Middleware_Error.prototype);
+        console.log(error);
     }
 
 }

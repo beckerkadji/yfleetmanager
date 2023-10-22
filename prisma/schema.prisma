@@ -11,30 +11,83 @@ datasource db {
 }
 
 model User {
-  id          String            @id @default(uuid())
-  parent_id   String?
-  parent      User?             @relation("ParentChilds", fields: [parent_id], references: [id])
-  childs      User[]            @relation("ParentChilds")
-  permissions user_permission[]
-  phone       String            @unique
-  email       String            @unique
-  firstName   String
-  lastName    String?
-  password    String
-  roleId      Int
-  role        Role              @relation(fields: [roleId], references: [id])
-  token       Token[]           @relation(name: "token_user_ship")
-  blocked_at  DateTime?
-  verified_at DateTime?
-  deleted_at  DateTime?
-  created_at  DateTime          @default(now())
-  updated_at  DateTime          @updatedAt
+  id                       String            @id @default(uuid())
+  parent_id                String?
+  parent                   User?             @relation("ParentChilds", fields: [parent_id], references: [id])
+  childs                   User[]            @relation("ParentChilds")
+  permissions              user_permission[]
+  phone                    String            @unique
+  email                    String            @unique
+  first_name               String?
+  last_name                String?
+  birthday                 DateTime?
+  place_Birth              String?
+  cni_umber                String?
+  image                    String?
+  password                 String
+  roleId                   Int
+  grade_id                 Int?
+  grade                    Grade?            @relation(fields: [grade_id], references: [id])
+  driver_type_id           Int?
+  driver_type              DriverType?       @relation(fields: [driver_type_id], references: [id])
+  city_id                  Int?
+  city                     City?             @relation(fields: [city_id], references: [id])
+  role                     Role              @relation(fields: [roleId], references: [id])
+  token                    Token[]           @relation(name: "token_user_ship")
+  tags                     UsersOnTags[]
+  driver_licence_number    String?
+  driver_licence_type      String?
+  country_licence_delivery String?
+  issue_delivery_on        DateTime?
+  expire_delivery_at       DateTime?
+  daily_recipe             Int?
+  currency                 String?
+  blocked_at               DateTime?
+  verified_at              DateTime?
+  deleted_at               DateTime?
+  created_at               DateTime          @default(now())
+  updated_at               DateTime          @updatedAt
 }
 
 model Role {
   id    Int    @id @default(autoincrement())
   name  String @unique
   users User[]
+}
+
+model City {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model DriverType {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model Grade {
+  id    Int    @id @default(autoincrement())
+  name  String
+  users User[]
+}
+
+model Tag {
+  id    Int           @id @default(autoincrement())
+  name  String
+  users UsersOnTags[]
+}
+
+model UsersOnTags {
+  user_id     String
+  user        User     @relation(fields: [user_id], references: [id])
+  tag_id      Int
+  tag         Tag      @relation(fields: [tag_id], references: [id])
+  assigne_at  DateTime @default(now())
+  assigned_by String?
+
+  @@id([user_id, tag_id])
 }
 
 model Token {
@@ -61,11 +114,16 @@ model user_permission {
   @@id([user_id, permission_id])
 }
 
-model forgot_password {
-  id         String   @id @default(uuid())
-  username   String   @unique
-  otp        String   @db.VarChar(8)
-  expired_at DateTime
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model Otp {
+  id        Int    @id @default(autoincrement())
+  otp       Int
+  userEmail String
+  expiredIn Int
+}
+
+model Password {
+  id          Int      @id @default(autoincrement())
+  userEmail   String
+  newPassword String
+  createdAt   DateTime @default(now())
 }

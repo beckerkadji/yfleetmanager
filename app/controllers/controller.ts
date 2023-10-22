@@ -3,6 +3,7 @@ import { Controller } from "tsoa";
 import cloudinary from "cloudinary";
 import streamifier from "streamifier";
 import Mailer from "../../src/core/notifications/mail";
+import { USER_ROLE } from "../models/role";
 
 
 dotenv.config();
@@ -40,12 +41,44 @@ export class My_Controller extends Controller {
         
     }
 
-    public async sendMailFromTemplate (config : {
+    public sanityzeRole = (role: string): number =>{
+		switch( role ){
+			case "root":
+				return USER_ROLE.ROOT;
+			case "admin":
+				return USER_ROLE.ADMIN;
+			case "user" :
+				return USER_ROLE.DRIVER;
+			default :
+				throw new Error("Unknow role")
+		}
+	}
+
+    public generate_otp() : number{
+        const otpTable = ['0','1','2','3','4','5','6','7','8','9']
+        const random = [];
+        for(let i = 0; i<4; i++){
+         random.push(Math.floor(Math.random()* otpTable.length))
+        }
+        const otp = random.join('')
+        return parseInt(otp)
+    }
+
+    public async sendSMS (config : {
         to : string | string[],
         subject : string,
         modelName : string,
         data ?: object
     }) : Promise<void> {
+        return await Mailer.sendFromTemplate(config.to, config.subject, "", config.modelName, config.data);
+    }
+
+    public async sendMailFromTemplate (config : {
+        to : string | string[],
+        subject : string,
+        modelName : string,
+        data ?: object
+    }) : Promise<any> {
         return await Mailer.sendFromTemplate(config.to, config.subject, "", config.modelName, config.data);
     }
 

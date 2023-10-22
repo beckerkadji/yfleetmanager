@@ -7,7 +7,7 @@ export const SALT_ROUND = 10;
 export enum AUTHUSER {
     "ROOT" = "root",
     "ADMIN" = "admin",
-    "USER" = "user"
+    "DRIVER" = "driver"
 }
 
 export const UserModel = prisma.user

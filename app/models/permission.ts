@@ -3,13 +3,22 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export enum PERMISSION {
-    // User Management
-    READ_USER = "read_user",
-    ADD_USER = "add_user",
-    EDIT_USER = "edit_user",
-    DELETE_USER = "delete_user",
-    BLOCK_USER = "block_user",
-    INVITE_USER = "invite_user",
+    // Root Management
+    ALL_PERMISSION = "all_permission",
+
+    // Admin Management
+    READ_ADMIN = "read_admin",
+    ADD_ADMIN = "add_admin",
+    EDIT_ADMIN = "edit_admin",
+    DELETE_ADMIN = "delete_admin",
+    BLOCK_ADMIN = "block_admin",
+
+    // Driver Management
+    READ_DRIVER = "read_driver",
+    ADD_DRIVER = "add_driver",
+    EDIT_DRIVER = "edit_driver",
+    DELETE_DRIVER = "delete_driver",
+    BLOCK_DRIVER = "block_driver",
 
     // Permission Management
     ADD_PERMISSION = "add_permission",
