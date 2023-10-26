@@ -9,8 +9,25 @@ export const userCreateSchema = Joi.object({
     phone : schema.phone
 })
 
+export const adminCreateSchema = Joi.object({
+    first_name : schema.firstName,
+    last_name : schema.lastName,
+    email : schema.email,
+    phone : schema.phone
+})
+
 export const loginSchema = Joi.object({
     email : schema.email,
+    password : schema.password
+})
+
+export const verifiedUserSchema = Joi.object({
+    email : schema.email,
+    new_password : schema.password,
+    token: schema.stringText
+})
+
+export const forgotSchema = Joi.object({
     password : schema.password
 })
 

@@ -5,6 +5,9 @@ import streamifier from "streamifier";
 import Mailer from "../../src/core/notifications/mail";
 import { USER_ROLE } from "../models/role";
 
+export enum AUTHORIZATION  {
+    TOKEN = "Jwt"   
+};
 
 dotenv.config();
 
@@ -41,10 +44,21 @@ export class My_Controller extends Controller {
         
     }
 
+    public generatePassword = (): string => {
+        let result = '';
+        let characters = <string>process.env.RANDOM_PASSWORD || "1234567890qwertyuyiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM"
+        let slugLength = characters.length
+        for ( let i = 0; i < 15; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() *
+                slugLength));
+        }
+        return result;
+    }
+
     public sanityzeRole = (role: string): number =>{
 		switch( role ){
 			case "root":
-				return USER_ROLE.ROOT;
+				return USER_ROLE.ADMIN;
 			case "admin":
 				return USER_ROLE.ADMIN;
 			case "user" :

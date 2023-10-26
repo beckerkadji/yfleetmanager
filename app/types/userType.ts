@@ -15,6 +15,19 @@ declare namespace UserType {
         password: string,
     }
 
+    export interface verifiedFields {
+        new_password: string,
+        email: defaultEmail,
+        token: string
+    }
+
+    export interface adminCreateFields {
+        first_name : defaultFisrtName,
+        last_name ?: defaultLastName,
+        email : defaultEmail,
+        phone: defaultPhone,
+    }
+
     export interface loginFields {
         email: defaultEmail,
         password : string

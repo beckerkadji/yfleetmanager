@@ -35,6 +35,8 @@ model User {
   role                     Role              @relation(fields: [roleId], references: [id])
   token                    Token[]           @relation(name: "token_user_ship")
   tags                     UsersOnTags[]
+  account_id               String?
+  account                  Account?           @relation(fields: [account_id], references: [id])
   driver_licence_number    String?
   driver_licence_type      String?
   country_licence_delivery String?
@@ -49,10 +51,78 @@ model User {
   updated_at               DateTime          @updatedAt
 }
 
+model Account {
+  id           String    @id @default(uuid())
+  status       Boolean   @default(false)
+  activated_at DateTime?
+  vehicles     Vehicle[]
+  users        User[]
+  created_at   DateTime  @default(now())
+  blocked_at   DateTime?
+  updated_at   DateTime  @updatedAt
+}
+
 model Role {
   id    Int    @id @default(autoincrement())
   name  String @unique
   users User[]
+}
+
+model Vehicle {
+  id                        Int          @id @default(autoincrement())
+  account_id                String
+  account                   Account      @relation(fields: [account_id], references: [id])
+  chassis_number            String
+  color_id                  Int
+  color                     carColor     @relation(fields: [color_id], references: [id])
+  brand_id                  Int
+  brand                     Brand        @relation(fields: [brand_id], references: [id])
+  gps_number                String?
+  registration_number       String
+  insurance_subscription_at DateTime
+  circulation_at            DateTime
+  entry_fleet_at            DateTime
+  mileage                   Int
+  contract_type             String
+  images                    Image[]
+  owner_id                  Int
+  owner                     VehicleOwner @relation(fields: [owner_id], references: [id])
+}
+
+model VehicleOwner {
+  id                     Int       @id @default(autoincrement())
+  first_name             String
+  last_name              String
+  cni_number             String
+  driver_licence__number String
+  vehicles               Vehicle[]
+}
+
+model Brand {
+  id      Int        @id @default(autoincrement())
+  name    String
+  vehicle Vehicle[]
+  model   CarModel[]
+}
+
+model Image {
+  id         Int     @id @default(autoincrement())
+  path       String
+  vehicle_id Int
+  vehicle    Vehicle @relation(fields: [vehicle_id], references: [id])
+}
+
+model CarModel {
+  id       Int    @id @default(autoincrement())
+  name     String
+  brand_id Int
+  brand    Brand  @relation(fields: [brand_id], references: [id])
+}
+
+model carColor {
+  id      Int       @id @default(autoincrement())
+  name    String
+  vehicle Vehicle[]
 }
 
 model City {
