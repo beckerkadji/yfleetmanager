@@ -2,7 +2,7 @@ import {Body, Get, Post, Route, Tags, Security} from "tsoa";
 import {  AUTHORIZATION, IResponse, My_Controller } from "./controller";
 import UserType from "../types/userType";
 import bcrypt from "bcryptjs"
-import {adminCreateSchema, userCreateSchema} from "../validations/user.validation";
+import { adminCreateSchema } from "../validations/user.validation";
 import { SALT_ROUND, UserModel} from "../models/user";
 import { ResponseHandler } from "../../src/config/responseHandler";
 import code from "../../src/config/code";

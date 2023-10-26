@@ -58,7 +58,7 @@ export class My_Controller extends Controller {
     public sanityzeRole = (role: string): number =>{
 		switch( role ){
 			case "root":
-				return USER_ROLE.ADMIN;
+				return USER_ROLE.ROOT;
 			case "admin":
 				return USER_ROLE.ADMIN;
 			case "user" :
