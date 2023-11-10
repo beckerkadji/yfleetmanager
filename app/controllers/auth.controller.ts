@@ -24,7 +24,7 @@ export class AuthController extends My_Controller {
             //found user
             const foundUser = await UserModel.findFirst({where: {email: body.email}})
             if(!foundUser)
-                return response.liteResponse(code.NOT_FOUND, 'User not found, Invalid email or password !')
+                return response.liteResponse(code.NOT_FOUND, 'User not found with this email!')
 
             if(!foundUser.verified_at)
                 return response.liteResponse(code.FAILURE, 'User not verified yet ! contact administrator', null)

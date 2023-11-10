@@ -13,12 +13,40 @@ export enum PERMISSION {
     DELETE_ADMIN = "delete_admin",
     BLOCK_ADMIN = "block_admin",
 
+    //AGENT Management
+    READ_AGENT = "read_agent",
+    ADD_AGENT = "add_agent",
+
+
     // Driver Management
     READ_DRIVER = "read_driver",
     ADD_DRIVER = "add_driver",
     EDIT_DRIVER = "edit_driver",
     DELETE_DRIVER = "delete_driver",
     BLOCK_DRIVER = "block_driver",
+
+
+    //vehicle Management
+    READ_VEHICLE = "read_vehicle",
+    ADD_VEHICLE = "add_vehicle",
+    EDIT_VEHICLE = "edit_vehicle",
+    DELETE_VEHICLE = "delete_vehicle",
+    DESACTIVATE_VEHICLE = "desactivate_vehicle",
+
+    //Passation Management
+    PASSATION_MANAGE = "passation_manage",
+
+    //planing Management
+    PLANNING_MANAGE = "planning_manage",
+    EDIT_PLANNING_DRIVER = "edit_planning_driver",
+
+    //entretien management
+    ENTRETIEN_MANAGE = "entretien_manage",
+
+    //comptability management
+    COMPTABILITY_MANAGE = "comptability_manage",
+
+
 
     // Permission Management
     ADD_PERMISSION = "add_permission",

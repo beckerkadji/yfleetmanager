@@ -36,7 +36,7 @@ model User {
   token                    Token[]           @relation(name: "token_user_ship")
   tags                     UsersOnTags[]
   account_id               String?
-  account                  Account?           @relation(fields: [account_id], references: [id])
+  account                  Account?          @relation(fields: [account_id], references: [id])
   driver_licence_number    String?
   driver_licence_type      String?
   country_licence_delivery String?
@@ -45,21 +45,41 @@ model User {
   daily_recipe             Int?
   currency                 String?
   blocked_at               DateTime?
+  suspended                Boolean           @default(false)
+  blocked_reason           String?
   verified_at              DateTime?
   deleted_at               DateTime?
   created_at               DateTime          @default(now())
   updated_at               DateTime          @updatedAt
+  Region                   Region?           @relation(fields: [regionId], references: [id])
+  regionId                 Int?
+  Vehicle_principal        Vehicle?          @relation(name: "vehicle_principal_driver")
+  Vehicle_interimaire      Vehicle?          @relation(name: "vehicle_interimaire_driver")
+  rapport                  rapport[]
 }
 
 model Account {
   id           String    @id @default(uuid())
   status       Boolean   @default(false)
   activated_at DateTime?
-  vehicles     Vehicle[]
-  users        User[]
   created_at   DateTime  @default(now())
   blocked_at   DateTime?
   updated_at   DateTime  @updatedAt
+  regions      Region[]
+  User         User[]
+}
+
+model Region {
+  id         Int        @id @default(autoincrement())
+  name       String
+  zone       String?
+  latitude   Int?
+  longitude  Int?
+  account_id String?
+  account    Account?   @relation(fields: [account_id], references: [id])
+  drivers    User[]
+  vehicles   Vehicle[]
+  suppliers  Supplier[]
 }
 
 model Role {
@@ -68,25 +88,72 @@ model Role {
   users User[]
 }
 
+model rapport {
+  id          Int       @id @default(autoincrement())
+  description String
+  created_at  DateTime?
+  user_id     String
+  user        User      @relation(fields: [user_id], references: [id])
+}
+
 model Vehicle {
   id                        Int          @id @default(autoincrement())
-  account_id                String
-  account                   Account      @relation(fields: [account_id], references: [id])
+  region_id                 Int
+  region                    Region       @relation(fields: [region_id], references: [id])
   chassis_number            String
   color_id                  Int
   color                     carColor     @relation(fields: [color_id], references: [id])
   brand_id                  Int
   brand                     Brand        @relation(fields: [brand_id], references: [id])
+  principal_driver_id       String?      @unique
+  principal_driver          User?        @relation(fields: [principal_driver_id], references: [id], name: "vehicle_principal_driver")
+  interimaire_driver_id     String?      @unique
+  interimaire_driver        User?        @relation(fields: [interimaire_driver_id], references: [id], name: "vehicle_interimaire_driver")
   gps_number                String?
   registration_number       String
   insurance_subscription_at DateTime
   circulation_at            DateTime
   entry_fleet_at            DateTime
   mileage                   Int
+  daily_recipe              Int?
   contract_type             String
   images                    Image[]
   owner_id                  Int
   owner                     VehicleOwner @relation(fields: [owner_id], references: [id])
+  desactivated              Boolean      @default(false)
+  desactivate_at            DateTime?
+  status                    String
+  vehicle_class_id          Int
+  vehicle_class             VehicleClass @relation(fields: [vehicle_class_id], references: [id])
+}
+
+model VehicleClass {
+  id           Int       @id @default(autoincrement())
+  name         String
+  daily_recipe Int
+  vihicles     Vehicle[]
+}
+
+model Supplier {
+  id                   Int              @id @default(autoincrement())
+  logo                 String?
+  business_name        String
+  social_reason        String
+  niu                  String?
+  phone                String?
+  email                String?
+  region_id            Int
+  region               Region           @relation(fields: [region_id], references: [id])
+  supplier_category_id Int
+  activity_category    SupplierCategory @relation(fields: [supplier_category_id], references: [id])
+  city                 String?
+  street               String?
+}
+
+model SupplierCategory {
+  id        Int        @id @default(autoincrement())
+  name      String
+  suppliers Supplier[]
 }
 
 model VehicleOwner {
