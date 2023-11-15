@@ -5,6 +5,8 @@ import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, H
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AuthController } from './../app/controllers/auth.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { AccountController } from './../app/controllers/account.controller';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AdminController } from './../app/controllers/admin.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { DriverController } from './../app/controllers/driver.controller';
@@ -96,6 +98,20 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "defaultRegion": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Region": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"ref":"defaultRegion","required":true},
+            "zone": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "defaultFisrtName": {
         "dataType": "refAlias",
         "type": {"dataType":"string","validators":{}},
@@ -106,7 +122,7 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"string","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "UserType.adminCreateFields": {
+    "ownerAccount": {
         "dataType": "refObject",
         "properties": {
             "first_name": {"ref":"defaultFisrtName","required":true},
@@ -117,9 +133,39 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AccountType.accountCreateFields": {
+        "dataType": "refObject",
+        "properties": {
+            "regions": {"dataType":"array","array":{"dataType":"refObject","ref":"Region"},"required":true},
+            "owner": {"ref":"ownerAccount","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AccountType.verifyOwnerAccount": {
+        "dataType": "refObject",
+        "properties": {
+            "email": {"ref":"defaultEmail","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UserType.adminCreateFields": {
+        "dataType": "refObject",
+        "properties": {
+            "first_name": {"ref":"defaultFisrtName","required":true},
+            "last_name": {"ref":"defaultLastName"},
+            "account_id": {"dataType":"string","required":true},
+            "assign_regions": {"dataType":"array","array":{"dataType":"double"},"required":true},
+            "email": {"ref":"defaultEmail","required":true},
+            "phone": {"ref":"defaultPhone","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ROLE_HR": {
         "dataType": "refEnum",
-        "enums": ["root","admin","driver"],
+        "enums": ["root","owner","admin","agent","driver"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "UserType.userCreateFields": {
@@ -321,8 +367,85 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/admin',
+        app.get('/account',
             authenticateMiddleware([{"Jwt":["all_permission"]}]),
+            ...(fetchMiddlewares<RequestHandler>(AccountController)),
+            ...(fetchMiddlewares<RequestHandler>(AccountController.prototype.index)),
+
+            function AccountController_index(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AccountController();
+
+
+              const promise = controller.index.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/account/create',
+            authenticateMiddleware([{"Jwt":["all_permission"]}]),
+            ...(fetchMiddlewares<RequestHandler>(AccountController)),
+            ...(fetchMiddlewares<RequestHandler>(AccountController.prototype.createAccount)),
+
+            function AccountController_createAccount(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"ref":"AccountType.accountCreateFields"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AccountController();
+
+
+              const promise = controller.createAccount.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/account/verify',
+            authenticateMiddleware([{"Jwt":["all_permission"]}]),
+            ...(fetchMiddlewares<RequestHandler>(AccountController)),
+            ...(fetchMiddlewares<RequestHandler>(AccountController.prototype.verify)),
+
+            function AccountController_verify(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"ref":"AccountType.verifyOwnerAccount"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AccountController();
+
+
+              const promise = controller.verify.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/admin',
+            authenticateMiddleware([{"Jwt":["read_admin"]}]),
             ...(fetchMiddlewares<RequestHandler>(AdminController)),
             ...(fetchMiddlewares<RequestHandler>(AdminController.prototype.index)),
 
@@ -347,13 +470,14 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/admin',
-            authenticateMiddleware([{"Jwt":["all_permission"]}]),
+            authenticateMiddleware([{"Jwt":["add_admin"]}]),
             ...(fetchMiddlewares<RequestHandler>(AdminController)),
             ...(fetchMiddlewares<RequestHandler>(AdminController.prototype.createAdmin)),
 
             function AdminController_createAdmin(request: any, response: any, next: any) {
             const args = {
                     body: {"in":"body","name":"body","required":true,"ref":"UserType.adminCreateFields"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

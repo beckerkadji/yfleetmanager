@@ -36,7 +36,7 @@ model User {
   token                    Token[]           @relation(name: "token_user_ship")
   tags                     UsersOnTags[]
   account_id               String?
-  account                  Account?          @relation(fields: [account_id], references: [id])
+  account                  Account?          @relation(fields: [account_id], references: [id], name: "user_in_account")
   driver_licence_number    String?
   driver_licence_type      String?
   country_licence_delivery String?
@@ -56,6 +56,9 @@ model User {
   Vehicle_principal        Vehicle?          @relation(name: "vehicle_principal_driver")
   Vehicle_interimaire      Vehicle?          @relation(name: "vehicle_interimaire_driver")
   rapport                  rapport[]
+  hisAcount                Account?          @relation(name: "AccountOwner")
+  AdminRegion              AdminRegion[]
+  regions                  Region[]          @relation(name: "AdminRegion")
 }
 
 model Account {
@@ -66,20 +69,33 @@ model Account {
   blocked_at   DateTime?
   updated_at   DateTime  @updatedAt
   regions      Region[]
-  User         User[]
+  users        User[]    @relation(name: "user_in_account")
+  owner_id     String    @unique
+  owner        User      @relation(fields: [owner_id], references: [id], name: "AccountOwner")
 }
 
 model Region {
-  id         Int        @id @default(autoincrement())
-  name       String
-  zone       String?
-  latitude   Int?
-  longitude  Int?
-  account_id String?
-  account    Account?   @relation(fields: [account_id], references: [id])
-  drivers    User[]
-  vehicles   Vehicle[]
-  suppliers  Supplier[]
+  id          Int           @id @default(autoincrement())
+  name        String
+  zone        String?
+  latitude    Int?
+  longitude   Int?
+  account_id  String?
+  account     Account?      @relation(fields: [account_id], references: [id])
+  users       User[]
+  vehicles    Vehicle[]
+  suppliers   Supplier[]
+  AdminRegion AdminRegion[]
+  admins      User[]        @relation(name: "AdminRegion")
+}
+
+model AdminRegion {
+  admin_id  String
+  admin     User   @relation(fields: [admin_id], references: [id])
+  region_id Int
+  region    Region @relation(fields: [region_id], references: [id])
+
+  @@id([region_id, admin_id])
 }
 
 model Role {

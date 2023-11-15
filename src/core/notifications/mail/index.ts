@@ -1,5 +1,4 @@
 import Mailjet from "node-mailjet"
-import nodemailer from 'nodemailer';
 
 
 export interface MailFormat{
@@ -26,15 +25,15 @@ class Mailer {
             // let message = await this.normalizeModel(modelName, language, data);
             // return await this.send(to, subject, message, language);
             const mailjetConnect = Mailjet
-            .apiConnect(<string>process.env.MAILJET_PUBLIC || "5fae5444f47866fb46706e40090a4e14",
-                        <string>process.env.MAILJET_PRIVATE || "d98ed65ca8d66c389fe84e4319e48c6a"
+            .apiConnect(<string>process.env.MAILJET_PUBLIC, //|| "5fae5444f47866fb46706e40090a4e14",
+                        <string>process.env.MAILJET_PRIVATE //|| "d98ed65ca8d66c389fe84e4319e48c6a"
             )
-            const request = mailjetConnect.post("send", { version : 'v3.1'}).request({
+            return mailjetConnect.post("send", {version: 'v3.1'}).request({
                 Messages: [
                     {
                         From: {
-                            Email: <string>process.env.SENDER_EMAIL || 'kadjibecker@gmail.com',
-                            Name: <string>process.env.SENDER_Name || 'admin',
+                            Email: <string>process.env.SENDER_EMAIL || 'k.becker@psatechnologie.com',
+                            Name: <string>process.env.SENDER_NAME || 'ADMIN',
                         },
                         To: this.receiver(to),
                         TemplateID: this.selectTemplateModel(modelName),
@@ -44,7 +43,6 @@ class Mailer {
                     }
                 ]
             })
-            return request
         } catch(error){
             console.log(error);
         }
@@ -56,9 +54,9 @@ class Mailer {
             case "login":
                 return 4517545 || process.env.LOGIN_TEMPLATE;
             case "forgotpassword":
-                return 4517545 || process.env.LOGIN_TEMPLATE;
+                return 5311428 || process.env.LOGIN_TEMPLATE;
             case "createuser":
-                return 4545497 || process.env.CREATE_USER_TEMPLATE;
+                return 5310536 || process.env.CREATE_ACOUNT_TEMPLATE;
             case "register" :
                 return 4529408 || process.env.REGISTER_TEMPLATE;
             default :

@@ -31,22 +31,20 @@ export enum PERMISSION {
     ADD_VEHICLE = "add_vehicle",
     EDIT_VEHICLE = "edit_vehicle",
     DELETE_VEHICLE = "delete_vehicle",
-    DESACTIVATE_VEHICLE = "desactivate_vehicle",
+    DISABLED_VEHICLE = "disabled_vehicle",
 
-    //Passation Management
-    PASSATION_MANAGE = "passation_manage",
+    //transfer Management
+    TRANSFER_MANAGE = "transfer_manage",
 
     //planing Management
     PLANNING_MANAGE = "planning_manage",
     EDIT_PLANNING_DRIVER = "edit_planning_driver",
 
-    //entretien management
-    ENTRETIEN_MANAGE = "entretien_manage",
+    //maintenance management
+    MAINTENANCE_MANAGE = "maintenance_manage",
 
-    //comptability management
-    COMPTABILITY_MANAGE = "comptability_manage",
-
-
+    //ACCOUNTING management
+    ACCOUNTING_MANAGE = "accounting_manage",
 
     // Permission Management
     ADD_PERMISSION = "add_permission",
@@ -64,8 +62,6 @@ export enum PERMISSION {
     EDIT_TARGET = "edit_target",
     REMOVE_TARGET = "remove_target",
 
-    // Manage Supplement search information
-    ADD_SUP_SEARCH = "add_sup_search"
 }
 
 export const permitionModel = prisma.permission;

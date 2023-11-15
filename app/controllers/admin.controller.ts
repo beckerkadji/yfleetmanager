@@ -1,4 +1,4 @@
-import {Body, Get, Post, Route, Tags, Security} from "tsoa";
+import {Body, Get, Post, Route, Tags, Security, Request} from "tsoa";
 import {  AUTHORIZATION, IResponse, My_Controller } from "./controller";
 import UserType from "../types/userType";
 import bcrypt from "bcryptjs"
@@ -11,6 +11,9 @@ import { UserPermissionModel, right_permission } from "../models/user_permission
 import { PERMISSION } from "../models/permission";
 import { accountModel } from "../models/account";
 import { AuthController } from "./auth.controller";
+import {regionModel} from "../models/regions";
+import express from "express";
+import {adminRegionModel} from "../models/admin_region";
 const response = new ResponseHandler()
 
 @Tags("Admin Controller")
@@ -19,7 +22,7 @@ const response = new ResponseHandler()
 export class AdminController extends My_Controller {
     private authCtrl = new AuthController()
 
-    @Security(AUTHORIZATION.TOKEN, [PERMISSION.ALL_PERMISSION])
+    @Security(AUTHORIZATION.TOKEN, [PERMISSION.READ_ADMIN])
     @Get("")
     public async index(
     ): Promise<IResponse> {
@@ -28,7 +31,12 @@ export class AdminController extends My_Controller {
                 include : {
                     role: true,
                     childs: true,
-                    permissions: true
+                    permissions: {
+                        select:{
+                            permission_id: true
+                        }
+                    },
+                    regions: true
                 },
                 where: {
                     roleId : USER_ROLE.ADMIN
@@ -44,68 +52,95 @@ export class AdminController extends My_Controller {
 
     }
 
-    @Security(AUTHORIZATION.TOKEN, [PERMISSION.ALL_PERMISSION])
+    @Security(AUTHORIZATION.TOKEN, [PERMISSION.ADD_ADMIN])
     @Post("")
     public async createAdmin(
-        @Body() body: UserType.adminCreateFields
+        @Body() body: UserType.adminCreateFields,
+        @Request() request: express.Request
     ): Promise<IResponse>{
         try {
+            let user = await this.getUserId(request.headers.authorization);
+
             const validate = this.validate(adminCreateSchema, body)
             if(validate !== true)
                 return response.liteResponse(code.VALIDATION_ERROR, "Validation Error !", validate)
-
-            let userData : any = body
-            let savedPassword = this.generatePassword()
-            userData['password'] = await bcrypt.hash(savedPassword, SALT_ROUND)
-			delete userData.role
 
             //Check if email already exist
             console.log("Check Email...")
             const verifyEmail = await UserModel.findFirst({where:{email : body.email}})
             if(verifyEmail)
                 return response.liteResponse(code.FAILURE, "Email already exist, Try with another email")
-            console.log("Check Email finished")
 
-            //create Account
-            let account = await accountModel.create({ data: {}})
-            if (!account)
-                return response.liteResponse(code.FAILURE, "An error occurred, on user creation. Retry later!", null)
 
-            const roleId = this.sanityzeRole(ROLE_HR.ROOT)
-            console.log('role id ',roleId)
-			const user = await UserModel.create({data : {
+            //Check if account exist and if user is on this account
+            // const verifyAccount = await accountModel.findFirst({
+            //     where:{
+            //         id : body.account_id,
+            //         users: {
+            //             some: {
+            //                 id: user.userId
+            //             }
+            //         }
+            //     },
+            // })
+            // if(verifyAccount)
+            //     return response.liteResponse(code.FAILURE, "Account not found or not authorization for this account")
+
+
+            let userData : any = body
+            let savedPassword = this.generatePassword()
+            userData['password'] = await bcrypt.hash(savedPassword, SALT_ROUND)
+            let assign_regions = body.assign_regions;
+            let accound_id = body.account_id
+			delete userData.role
+            delete userData.assign_regions
+            delete userData.account_id
+
+
+
+            const roleId = this.sanityzeRole(ROLE_HR.ADMIN)
+            console.log('body', body)
+            console.log('userdata', userData)
+			const admin = await UserModel.create({data : {
 					...userData,
 					role : {connect : {id: roleId}},
-                    account: {connect: {id: account.id}}
+                    account: {
+                        connect: {id: accound_id }
+                    },
+                    regions: {
+                        connect: assign_regions.map(regionId => ({
+                            id: regionId
+                        }))
+                    },
 				}})
-            console.log('user',user)
+            console.log('admin', admin)
 
-            if (!user)
+            if (!admin)
                 return response.liteResponse(code.FAILURE, "An error occurred, on user creation. Retry later!", null)
 
             //generate token
-            let tokenUser = await this.authCtrl.generate_token(user.id, user.email);
+            let tokenUser = await this.authCtrl.generate_token(admin.id, admin.email);
 
             await UserPermissionModel.createMany({
 				data : right_permission(ROLE_HR.ADMIN).map(
-					itm => ({permission_id : itm, user_id : user.id})
+					itm => ({permission_id : itm, user_id : admin.id})
 				)})
 
 				this.sendMailFromTemplate({
-					to : user.email,
+					to : admin.email,
 					modelName : "createuser",
 					data : {
-						username: user.first_name,
+						username: admin.first_name,
 						password : savedPassword,
                         token: tokenUser,
-						connexion: `${process.env.FRONT_URL}loginuser?usrn=${user.first_name}&tkn=${tokenUser}`
+						connexion: `${process.env.FRONT_URL}loginuser?usrn=${admin.first_name}&tkn=${tokenUser}`
 					},
 					subject : "Created Account"
 				})
 
 
             console.log("Create admin with Success")
-            return response.liteResponse(code.SUCCESS, "Account created with Success !", user)
+            return response.liteResponse(code.SUCCESS, "Account created with Success !", admin)
         }catch (e){
             console.log(e)
             return response.catchHandler(e)

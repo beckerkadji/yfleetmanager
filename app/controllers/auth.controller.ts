@@ -22,7 +22,10 @@ export class AuthController extends My_Controller {
     ) : Promise<IResponse> {
         try {
             //found user
-            const foundUser = await UserModel.findFirst({where: {email: body.email}})
+            const foundUser = await UserModel.findFirst({
+                where: {email: body.email},include: {
+                    hisAcount: true, permissions: { select: { permission_id: true}}
+                }})
             if(!foundUser)
                 return response.liteResponse(code.NOT_FOUND, 'User not found with this email!')
 
@@ -118,7 +121,7 @@ export class AuthController extends My_Controller {
 						otp : otp,
                         email: foundUser.email
 					},
-					subject : "OTP CODE "
+					subject : "OTP CODE"
 				})
                 if(res.response.status !== 200)
                     return response.liteResponse(code.FAILLURE, "error occured when sending otp, Try again !", null)

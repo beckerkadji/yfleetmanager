@@ -13,7 +13,9 @@ export const adminCreateSchema = Joi.object({
     first_name : schema.firstName,
     last_name : schema.lastName,
     email : schema.email,
-    phone : schema.phone
+    phone : schema.phone,
+    account_id : schema.uuid,
+    assign_regions: schema.adminRegions,
 })
 
 export const loginSchema = Joi.object({

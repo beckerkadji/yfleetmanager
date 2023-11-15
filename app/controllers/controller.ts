@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
-import { Controller } from "tsoa";
+import {Controller} from "tsoa";
 import cloudinary from "cloudinary";
 import streamifier from "streamifier";
 import Mailer from "../../src/core/notifications/mail";
-import { USER_ROLE } from "../models/role";
+import {USER_ROLE} from "../models/role";
+import {TokenModel} from "../models/token";
 
 export enum AUTHORIZATION  {
     TOKEN = "Jwt"   
@@ -59,12 +60,16 @@ export class My_Controller extends Controller {
 		switch( role ){
 			case "root":
 				return USER_ROLE.ROOT;
+            case "owner":
+                return USER_ROLE.OWNER;
 			case "admin":
 				return USER_ROLE.ADMIN;
+            case "agent":
+                return USER_ROLE.AGENT;
 			case "user" :
 				return USER_ROLE.DRIVER;
 			default :
-				throw new Error("Unknow role")
+				throw new Error("Unknown role")
 		}
 	}
 
@@ -94,6 +99,17 @@ export class My_Controller extends Controller {
         data ?: object
     }) : Promise<any> {
         return await Mailer.sendFromTemplate(config.to, config.subject, "", config.modelName, config.data);
+    }
+
+    public async getUserId(token: string | undefined): Promise<any> {
+        return TokenModel.findFirst({
+            where: {
+                jwt: token
+            },
+            select: {
+                userId: true
+            }
+        });
     }
 
     /**

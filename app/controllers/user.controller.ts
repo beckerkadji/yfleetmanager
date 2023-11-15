@@ -26,6 +26,7 @@ export class UserController extends My_Controller {
                 include : {
                     role: true,
                     childs: true,
+                    hisAcount: true
                 }
             });
             if(!findUser)

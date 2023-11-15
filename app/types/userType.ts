@@ -4,6 +4,7 @@ import { defaultFisrtName } from "./defaults/firstName.type"
 import { defaultLastName } from "./defaults/lastName.type"
 import { defaultOtp } from "./defaults/otp.type"
 import { defaultPhone } from "./defaults/phone.type"
+import {defaultRegion} from "./defaults/region.type";
 
 declare namespace UserType {
     export interface userCreateFields {
@@ -24,8 +25,14 @@ declare namespace UserType {
     export interface adminCreateFields {
         first_name : defaultFisrtName,
         last_name ?: defaultLastName,
+        account_id : string,
+        assign_regions: number[],
         email : defaultEmail,
         phone: defaultPhone,
+    }
+    interface Region {
+        name: defaultRegion,
+        zone: string
     }
 
     export interface loginFields {
