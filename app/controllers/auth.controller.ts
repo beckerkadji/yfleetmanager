@@ -1,14 +1,15 @@
 import {Body, Get, Post, Route, Tags, Security, Request} from "tsoa";
-import {  IResponse, My_Controller } from "./controller";
+import {AUTHORIZATION, IResponse, My_Controller} from "./controller";
 import UserType from "../types/userType";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
 import {resetPasswordSchema, verifiedUserSchema} from "../validations/user.validation";
-import {SALT_ROUND, UserModel} from "../models/user";
+import {AUTHUSER, SALT_ROUND, UserModel} from "../models/user";
 import { ResponseHandler } from "../../src/config/responseHandler";
 import code from "../../src/config/code";
 import {TokenModel} from "../models/token";
 import { otpModel } from "../models/otp";
+import express from "express";
 const response = new ResponseHandler()
 
 @Tags("Auth Controller")
@@ -23,9 +24,25 @@ export class AuthController extends My_Controller {
         try {
             //found user
             const foundUser = await UserModel.findFirst({
-                where: {email: body.email},include: {
-                    hisAcount: true, permissions: { select: { permission_id: true}}
-                }})
+                select: {
+                    id: true,
+                    email: true,
+                    phone: true,
+                    first_name: true,
+                    last_name: true,
+                    image: true,
+                    verified_at: true,
+                    created_at: true,
+                    regionId: true,
+                    blocked_at: true,
+                    blocked_reason: true,
+                    suspended: true,
+                    account_id: true,
+                    password: true,
+                    role: true
+                },
+                where: {email: body.email},
+            })
             if(!foundUser)
                 return response.liteResponse(code.NOT_FOUND, 'User not found with this email!')
 
@@ -40,10 +57,41 @@ export class AuthController extends My_Controller {
             else {
                 // Create generate token
                 const jwtToken = await this.generate_token(foundUser.id, foundUser.email)
-                return response.liteResponse(code.SUCCESS, "Sucess request login", {...foundUser, token: jwtToken})
+                return response.liteResponse(code.SUCCESS, "Sucess request login", {...foundUser, role: foundUser.role.name, token: jwtToken})
             }  
         }
         catch (e){
+            return response.catchHandler(e)
+        }
+    }
+
+    @Get('profile')
+    @Security(AUTHORIZATION.TOKEN)
+    public async profile(
+        @Request() request: express.Request
+    ): Promise<IResponse> {
+        try {
+            let user = await this.getUserId(request.headers.authorization);
+            let profile = await UserModel.findFirst({
+                where: {
+                    id: user.userId
+                },
+                include: {
+                    permissions: {
+                        select: {
+                            permission_id: true
+                        }
+                    },
+                    regions: true,
+                    hisAcount: true
+                }
+            })
+            if(!profile)
+                return response.liteResponse(code.NOT_FOUND, "Account profile not found", null)
+
+            return  response.liteResponse(code.SUCCESS, 'Success', profile)
+
+        }catch (e){
             return response.catchHandler(e)
         }
     }
@@ -248,7 +296,7 @@ export class AuthController extends My_Controller {
     }
 
     @Get('logout')
-    @Security("Jwt")
+    @Security(AUTHORIZATION.TOKEN)
     public async logout(
         @Request() req : any
     ): Promise<IResponse> {

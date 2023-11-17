@@ -33,7 +33,7 @@ class Mailer {
                     {
                         From: {
                             Email: <string>process.env.SENDER_EMAIL || 'k.becker@psatechnologie.com',
-                            Name: <string>process.env.SENDER_NAME || 'ADMIN',
+                            Name: <string>process.env.SENDER_NAME || 'psatechnologie',
                         },
                         To: this.receiver(to),
                         TemplateID: this.selectTemplateModel(modelName),
@@ -54,9 +54,9 @@ class Mailer {
             case "login":
                 return 4517545 || process.env.LOGIN_TEMPLATE;
             case "forgotpassword":
-                return 5311428 || process.env.LOGIN_TEMPLATE;
+                return 5315161 || process.env.LOGIN_TEMPLATE;
             case "createuser":
-                return 5310536 || process.env.CREATE_ACOUNT_TEMPLATE;
+                return 5314807 || process.env.CREATE_ACOUNT_TEMPLATE;
             case "register" :
                 return 4529408 || process.env.REGISTER_TEMPLATE;
             default :
