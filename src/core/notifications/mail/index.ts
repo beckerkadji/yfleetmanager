@@ -32,7 +32,7 @@ class Mailer {
                 Messages: [
                     {
                         From: {
-                            Email: <string>process.env.SENDER_EMAIL || 'k.becker@psatechnologie.com',
+                            Email: <string>process.env.SENDER_EMAIL || 'kadjibecker@gmail.com',
                             Name: <string>process.env.SENDER_NAME || 'psatechnologie',
                         },
                         To: this.receiver(to),

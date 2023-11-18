@@ -1,7 +1,7 @@
 {
-    "name": "YFLEET_MANAGER",
+    "name": "VTC_CONTROL",
     "version": "1.0.0",
-    "description": "yflett manager api",
+    "description": "vtc control api",
     "main": "src/server.ts",
     "scripts": {
         "dev": "nodemon src/server.ts",
