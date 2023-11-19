@@ -41,7 +41,7 @@ declare namespace UserType {
     }
 
     export interface forgotPasswordFields {
-        phone: defaultPhone,
+        email: defaultEmail,
     }
 
     export interface resetPasswordFields {

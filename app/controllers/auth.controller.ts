@@ -145,10 +145,10 @@ export class AuthController extends My_Controller {
     ): Promise<IResponse> {
         try {
             //found user
-            const foundUser = await UserModel.findFirst({where: {phone: body.phone}})
+            const foundUser = await UserModel.findFirst({where: {email: body.email}})
 
             if(!foundUser) {
-                return response.liteResponse(code.NOT_FOUND, 'User not found with this phone number')
+                return response.liteResponse(code.NOT_FOUND, 'User not found')
             } else {
 
                 if(!foundUser.verified_at)
@@ -175,9 +175,7 @@ export class AuthController extends My_Controller {
                     return response.liteResponse(code.FAILLURE, "error occured when sending otp, Try again !", null)
 
                 return response.liteResponse(code.SUCCESS, "Verify OTP CODE", {otp, email: foundUser.email})
-
             }
-
         }
         catch (e){
             return response.catchHandler(e)
@@ -258,7 +256,6 @@ export class AuthController extends My_Controller {
         }catch(e){
             return response.catchHandler(e)
         }
-        
     }
 
     @Post('reset_password')
