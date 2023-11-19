@@ -155,7 +155,6 @@ const models: TsoaRoute.Models = {
         "properties": {
             "first_name": {"ref":"defaultFisrtName","required":true},
             "last_name": {"ref":"defaultLastName"},
-            "account_id": {"dataType":"string","required":true},
             "assign_regions": {"dataType":"array","array":{"dataType":"double"},"required":true},
             "email": {"ref":"defaultEmail","required":true},
             "phone": {"ref":"defaultPhone","required":true},
@@ -516,6 +515,32 @@ export function RegisterRoutes(app: Router) {
 
 
               const promise = controller.createAdmin.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/admin/verify',
+            authenticateMiddleware([{"Jwt":["add_admin"]}]),
+            ...(fetchMiddlewares<RequestHandler>(AdminController)),
+            ...(fetchMiddlewares<RequestHandler>(AdminController.prototype.verify)),
+
+            function AdminController_verify(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"ref":"AccountType.verifyOwnerAccount"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new AdminController();
+
+
+              const promise = controller.verify.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

@@ -83,7 +83,11 @@ export class AuthController extends My_Controller {
                         }
                     },
                     regions: true,
-                    hisAcount: true
+                    hisAcount: {
+                        include:{
+                            regions: true
+                        }
+                    }
                 }
             })
             if(!profile)
@@ -128,7 +132,6 @@ export class AuthController extends My_Controller {
                         email: body.email,
                     },
                 })
-                
                 return response.liteResponse(code.SUCCESS, "Password updated with success ", updatePassword)
             }  
         }
@@ -136,8 +139,6 @@ export class AuthController extends My_Controller {
             return response.catchHandler(e)
         }
     }
-
-
 
     @Post('forgot_password')
     public async forgotPassword(

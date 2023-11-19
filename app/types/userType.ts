@@ -25,7 +25,6 @@ declare namespace UserType {
     export interface adminCreateFields {
         first_name : defaultFisrtName,
         last_name ?: defaultLastName,
-        account_id : string,
         assign_regions: number[],
         email : defaultEmail,
         phone: defaultPhone,
