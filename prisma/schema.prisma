@@ -164,6 +164,8 @@ model Supplier {
   activity_category    SupplierCategory @relation(fields: [supplier_category_id], references: [id])
   city                 String?
   street               String?
+  created_at           DateTime         @default(now())
+  updated_at           DateTime         @updatedAt
 }
 
 model SupplierCategory {
