@@ -77,9 +77,9 @@ export class My_Controller extends Controller {
         const otpTable = ['0','1','2','3','4','5','6','7','8','9']
         const random = [];
         for(let i = 0; i<4; i++){
-         random.push(Math.floor(Math.random()* otpTable.length))
+         random.push(Math.floor(Math.random() * otpTable.length))
         }
-        const otp = random.join('')
+        const otp = random.join('').substring(0, 4)
         return parseInt(otp)
     }
 
