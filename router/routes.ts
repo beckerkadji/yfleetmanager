@@ -54,15 +54,10 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "defaultPhone": {
-        "dataType": "refAlias",
-        "type": {"dataType":"string","validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "UserType.forgotPasswordFields": {
         "dataType": "refObject",
         "properties": {
-            "phone": {"ref":"defaultPhone","required":true},
+            "email": {"ref":"defaultEmail","required":true},
         },
         "additionalProperties": false,
     },
@@ -118,6 +113,11 @@ const models: TsoaRoute.Models = {
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "defaultLastName": {
+        "dataType": "refAlias",
+        "type": {"dataType":"string","validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "defaultPhone": {
         "dataType": "refAlias",
         "type": {"dataType":"string","validators":{}},
     },
