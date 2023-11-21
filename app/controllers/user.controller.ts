@@ -1,15 +1,8 @@
-import {Body, Get, Post, Route, Tags, Security, Request} from "tsoa";
-import {  IResponse, My_Controller } from "./controller";
-import UserType from "../types/userType";
-import bcrypt from "bcryptjs"
-import jwt from "jsonwebtoken"
-import {userCreateSchema} from "../validations/user.validation";
-import {AUTHUSER, SALT_ROUND, UserModel} from "../models/user";
+import {Get, Route, Tags, Security } from "tsoa";
+import {AUTHORIZATION, IResponse, My_Controller} from "./controller";
+import {UserModel} from "../models/user";
 import { ResponseHandler } from "../../src/config/responseHandler";
 import code from "../../src/config/code";
-import {USER_ROLE} from "../models/role";
-import {TokenModel} from "../models/token";
-import { UserPermissionModel, right_permission } from "../models/user_permission";
 import { PERMISSION } from "../models/permission";
 const response = new ResponseHandler()
 
@@ -17,7 +10,7 @@ const response = new ResponseHandler()
 @Route("/user")
 
 export class UserController extends My_Controller {
-    @Security("Jwt", [PERMISSION.ALL_PERMISSION])
+    @Security(AUTHORIZATION.TOKEN, [PERMISSION.ALL_PERMISSION])
     @Get("")
     public async index(
     ): Promise<IResponse> {
@@ -36,6 +29,5 @@ export class UserController extends My_Controller {
         }catch(e){
             return response.catchHandler(e)
         }
-
     }
 }

@@ -70,6 +70,7 @@ model Account {
   updated_at   DateTime  @updatedAt
   regions      Region[]
   users        User[]    @relation(name: "user_in_account")
+  brands       Brand[]
   owner_id     String    @unique
   owner        User      @relation(fields: [owner_id], references: [id], name: "AccountOwner")
 }
@@ -132,6 +133,8 @@ model Vehicle {
   entry_fleet_at            DateTime
   mileage                   Int
   daily_recipe              Int?
+  currency_id               Int
+  currency                  Currency     @relation(fields: [currency_id], references: [id])
   contract_type             String
   images                    Image[]
   owner_id                  Int
@@ -141,6 +144,12 @@ model Vehicle {
   status                    String
   vehicle_class_id          Int
   vehicle_class             VehicleClass @relation(fields: [vehicle_class_id], references: [id])
+}
+
+model Currency {
+  id       Int       @id @default(autoincrement())
+  name     String
+  vihicles Vehicle[]
 }
 
 model VehicleClass {
@@ -184,10 +193,14 @@ model VehicleOwner {
 }
 
 model Brand {
-  id      Int        @id @default(autoincrement())
-  name    String
-  vehicle Vehicle[]
-  model   CarModel[]
+  id         Int        @id @default(autoincrement())
+  name       String
+  account_id String
+  account    Account    @relation(fields: [account_id], references: [id])
+  vehicle    Vehicle[]
+  model      CarModel[]
+
+  @@unique([account_id, name])
 }
 
 model Image {

@@ -26,6 +26,7 @@ export const schema = {
             })
         )
         .required(),
+    name: Joi.string().required(),
     owner: Joi.object({
         first_name: Joi.string().required(),
         last_name: Joi.string().optional(),

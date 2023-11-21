@@ -12,6 +12,8 @@ import { AdminController } from './../app/controllers/admin.controller';
 import { DriverController } from './../app/controllers/driver.controller';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { UserController } from './../app/controllers/user.controller';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { VehicleController } from './../app/controllers/vehicle.controller';
 import { expressAuthentication } from './../app/middlewares/auth';
 // @ts-ignore - no great way to install types from subpackage
 const promiseAny = require('promise.any');
@@ -176,6 +178,23 @@ const models: TsoaRoute.Models = {
             "phone": {"ref":"defaultPhone","required":true},
             "role": {"ref":"ROLE_HR","required":true},
             "password": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "VehicleType.brandCreate": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "VehicleType.modelCreateField": {
+        "dataType": "refObject",
+        "properties": {
+            "brand_id": {"dataType":"double","required":true},
+            "name": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -617,6 +636,134 @@ export function RegisterRoutes(app: Router) {
 
 
               const promise = controller.index.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/vehicle',
+            authenticateMiddleware([{"Jwt":["read_vehicle"]}]),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController)),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController.prototype.index)),
+
+            function VehicleController_index(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new VehicleController();
+
+
+              const promise = controller.index.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/vehicle/brand',
+            authenticateMiddleware([{"Jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController)),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController.prototype.getBrand)),
+
+            function VehicleController_getBrand(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new VehicleController();
+
+
+              const promise = controller.getBrand.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/vehicle/model',
+            authenticateMiddleware([{"Jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController)),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController.prototype.getModel)),
+
+            function VehicleController_getModel(request: any, response: any, next: any) {
+            const args = {
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new VehicleController();
+
+
+              const promise = controller.getModel.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/vehicle/brand',
+            authenticateMiddleware([{"Jwt":["add_vehicle"]}]),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController)),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController.prototype.createBrand)),
+
+            function VehicleController_createBrand(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"ref":"VehicleType.brandCreate"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new VehicleController();
+
+
+              const promise = controller.createBrand.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/vehicle/model',
+            authenticateMiddleware([{"Jwt":["add_vehicle"]}]),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController)),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController.prototype.createModel)),
+
+            function VehicleController_createModel(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"ref":"VehicleType.modelCreateField"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new VehicleController();
+
+
+              const promise = controller.createModel.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

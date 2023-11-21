@@ -12,7 +12,6 @@ import { PERMISSION } from "../models/permission";
 import { AuthController } from "./auth.controller";
 import express from "express";
 import AccountType from "../types/accountType";
-import {accountModel} from "../models/account";
 const response = new ResponseHandler()
 
 @Tags("Admin Controller")
@@ -99,9 +98,6 @@ export class AdminController extends My_Controller {
                     delete userData.role
                     delete userData.assign_regions
                     delete userData.account_id
-
-                    console.log('profile regions', profileRegions)
-                    console.log('body region provide', assign_regions)
 
                     const regionsExist = assign_regions.every(regionId => {
                         return profileRegions.some(profileRegion => profileRegion.id === regionId);
