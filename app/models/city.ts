@@ -14,4 +14,4 @@ export enum CITY_HR {
     YAOUNDE = "yaounde",
 }
 
-export const cityModel = prisma.city ;
+export const CityModel = prisma.city ;

@@ -16,4 +16,4 @@ export enum GRADE_HR {
     EXPERT = "expert"
 }
 
-export const gradeModel = prisma.grade;
+export const GradeModel = prisma.grade;

@@ -114,18 +114,18 @@ model rapport {
 }
 
 model Vehicle {
-  id                        Int          @id @default(autoincrement())
+  id                        Int           @id @default(autoincrement())
   region_id                 Int
-  region                    Region       @relation(fields: [region_id], references: [id])
+  region                    Region        @relation(fields: [region_id], references: [id])
   chassis_number            String
   color_id                  Int
-  color                     carColor     @relation(fields: [color_id], references: [id])
+  color                     carColor      @relation(fields: [color_id], references: [id])
   brand_id                  Int
-  brand                     Brand        @relation(fields: [brand_id], references: [id])
-  principal_driver_id       String?      @unique
-  principal_driver          User?        @relation(fields: [principal_driver_id], references: [id], name: "vehicle_principal_driver")
-  interimaire_driver_id     String?      @unique
-  interimaire_driver        User?        @relation(fields: [interimaire_driver_id], references: [id], name: "vehicle_interimaire_driver")
+  brand                     Brand         @relation(fields: [brand_id], references: [id])
+  principal_driver_id       String?       @unique
+  principal_driver          User?         @relation(fields: [principal_driver_id], references: [id], name: "vehicle_principal_driver")
+  interimaire_driver_id     String?       @unique
+  interimaire_driver        User?         @relation(fields: [interimaire_driver_id], references: [id], name: "vehicle_interimaire_driver")
   gps_number                String?
   registration_number       String
   insurance_subscription_at DateTime
@@ -134,22 +134,28 @@ model Vehicle {
   mileage                   Int
   daily_recipe              Int?
   currency_id               Int
-  currency                  Currency     @relation(fields: [currency_id], references: [id])
+  currency                  Currency      @relation(fields: [currency_id], references: [id])
   contract_type             String
   images                    Image[]
   owner_id                  Int
-  owner                     VehicleOwner @relation(fields: [owner_id], references: [id])
-  desactivated              Boolean      @default(false)
+  owner                     VehicleOwner  @relation(fields: [owner_id], references: [id])
+  desactivated              Boolean       @default(false)
   desactivate_at            DateTime?
   status                    String
-  vehicle_class_id          Int
-  vehicle_class             VehicleClass @relation(fields: [vehicle_class_id], references: [id])
+  vehicle_class_id          Int?
+  vehicle_class             VehicleClass? @relation(fields: [vehicle_class_id], references: [id])
+}
+
+model vehicleStatus {
+  id   Int    @id @default(autoincrement())
+  name String
 }
 
 model Currency {
-  id       Int       @id @default(autoincrement())
-  name     String
-  vihicles Vehicle[]
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  country_code String    @unique
+  vihicles     Vehicle[]
 }
 
 model VehicleClass {
@@ -225,19 +231,19 @@ model carColor {
 
 model City {
   id    Int    @id @default(autoincrement())
-  name  String
+  name  String @unique
   users User[]
 }
 
 model DriverType {
   id    Int    @id @default(autoincrement())
-  name  String
+  name  String @unique
   users User[]
 }
 
 model Grade {
   id    Int    @id @default(autoincrement())
-  name  String
+  name  String @unique
   users User[]
 }
 

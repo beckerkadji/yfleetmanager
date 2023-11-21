@@ -12,4 +12,4 @@ export enum Driver_TYPE_HR {
     INTERIMAIRE = "interimaire",
 }
 
-export const driverTypeModel = prisma.driverType ;
+export const DriverTypeModel = prisma.driverType ;

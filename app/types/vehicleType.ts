@@ -17,11 +17,9 @@ declare namespace VehicleType {
         insurance_subscription_at: Date
         circulation_at : Date,
         entry_fleet_at: Date,
-        mileage: number
-        daily_recipe: number
-        phone: defaultPhone,
-        role : ROLE_HR,
-        password: string,
+        mileage: number,
+        daily_recipe: number,
+        currency_id: number,
     }
     export interface brandCreate {
         name: string
