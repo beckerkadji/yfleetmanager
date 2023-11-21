@@ -206,7 +206,7 @@ async function main() {
         }
 
     } else {
-        throw new Error('Vérifiez que les variable d\'environement ROOT_EMAIL ROOT_PASSWORD ROOT_PHONE ROOT_FIRST_NAME et ROOT_LAST_NAME sont définie.');
+        throw new Error('Vérifiez que les variables d\'environements ROOT_EMAIL ROOT_PASSWORD ROOT_PHONE ROOT_FIRST_NAME et ROOT_LAST_NAME sont définies.');
     }
 
 }
