@@ -120,9 +120,9 @@ export class AuthController extends My_Controller {
                     }
                 }
             })
-            if(!foundUser)
-                return response.liteResponse(code.NOT_FOUND, 'Incorrect token or username!')
-            else {
+            if(!foundUser){
+                return response.liteResponse(code.FAILURE, 'Incorrect token or email!');
+            }else {
                 let updatePassword = await UserModel.update({
                     data: {
                         verified_at: new Date(),
