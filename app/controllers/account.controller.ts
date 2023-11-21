@@ -116,7 +116,7 @@ export class AccountController extends My_Controller {
                     modelName : "createuser",
                     data : {
                         username: account.owner.first_name,
-                        connexion: `${process.env.FRONT_URL}loginuser?usrn=${account.owner.first_name}&tkn=${tokenUser}?email=${account.owner.email}`
+                        connexion: `${process.env.FRONT_URL}loginuser?usrn=${account.owner.first_name}&tkn=${tokenUser}&email=${account.owner.email}`
                     },
                     subject : "Creation de compte"
                 })
@@ -168,7 +168,7 @@ export class AccountController extends My_Controller {
                 modelName : "createuser",
                 data : {
                     username: findAccount.owner.first_name,
-                    connexion: `${process.env.FRONT_URL}loginuser?usrn=${findAccount.owner.first_name}&tkn=${tokenUser}`
+                    connexion: `${process.env.FRONT_URL}loginuser?usrn=${findAccount.owner.first_name}&tkn=${tokenUser}&email=${findAccount.owner.email}`
                 },
                 subject : "Validation de compte"
             })
