@@ -206,7 +206,7 @@ async function main() {
         }
 
     } else {
-        throw new Error('Vérifiez que les valeurs de process.env.ROOT_EMAIL process.env.ROOT_PASSWORD et process.env.ROOT_PHONE sont définie.');
+        throw new Error('Vérifiez que les variable d\'environement ROOT_EMAIL ROOT_PASSWORD ROOT_PHONE ROOT_FIRST_NAME et ROOT_LAST_NAME sont définie.');
     }
 
 }
