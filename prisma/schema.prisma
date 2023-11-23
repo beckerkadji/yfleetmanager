@@ -37,7 +37,7 @@ model User {
   tags                     UsersOnTags[]
   account_id               String?
   account                  Account?          @relation(fields: [account_id], references: [id], name: "user_in_account")
-  driver_licence_number    String?
+  driver_licence_number    String?           @unique
   driver_licence_type      String?
   country_licence_delivery String?
   issue_delivery_on        DateTime?
@@ -62,17 +62,18 @@ model User {
 }
 
 model Account {
-  id           String    @id @default(uuid())
-  status       Boolean   @default(false)
-  activated_at DateTime?
-  created_at   DateTime  @default(now())
-  blocked_at   DateTime?
-  updated_at   DateTime  @updatedAt
-  regions      Region[]
-  users        User[]    @relation(name: "user_in_account")
-  brands       Brand[]
-  owner_id     String    @unique
-  owner        User      @relation(fields: [owner_id], references: [id], name: "AccountOwner")
+  id            String         @id @default(uuid())
+  status        Boolean        @default(false)
+  activated_at  DateTime?
+  created_at    DateTime       @default(now())
+  blocked_at    DateTime?
+  updated_at    DateTime       @updatedAt
+  regions       Region[]
+  users         User[]         @relation(name: "user_in_account")
+  brands        Brand[]
+  vehicleOwners VehicleOwner[]
+  owner_id      String         @unique
+  owner         User           @relation(fields: [owner_id], references: [id], name: "AccountOwner")
 }
 
 model Region {
@@ -117,17 +118,19 @@ model Vehicle {
   id                        Int           @id @default(autoincrement())
   region_id                 Int
   region                    Region        @relation(fields: [region_id], references: [id])
-  chassis_number            String
+  chassis_number            String        @unique
   color_id                  Int
   color                     carColor      @relation(fields: [color_id], references: [id])
   brand_id                  Int
   brand                     Brand         @relation(fields: [brand_id], references: [id])
+  model_id                  Int
+  model                     CarModel      @relation(fields: [model_id], references: [id])
   principal_driver_id       String?       @unique
   principal_driver          User?         @relation(fields: [principal_driver_id], references: [id], name: "vehicle_principal_driver")
   interimaire_driver_id     String?       @unique
   interimaire_driver        User?         @relation(fields: [interimaire_driver_id], references: [id], name: "vehicle_interimaire_driver")
-  gps_number                String?
-  registration_number       String
+  gps_number                String?       @unique
+  registration_number       String        @unique
   insurance_subscription_at DateTime
   circulation_at            DateTime
   entry_fleet_at            DateTime
@@ -136,7 +139,6 @@ model Vehicle {
   currency_id               Int
   currency                  Currency      @relation(fields: [currency_id], references: [id])
   contract_type             String
-  images                    Image[]
   owner_id                  Int
   owner                     VehicleOwner  @relation(fields: [owner_id], references: [id])
   desactivated              Boolean       @default(false)
@@ -144,6 +146,10 @@ model Vehicle {
   status                    String
   vehicle_class_id          Int?
   vehicle_class             VehicleClass? @relation(fields: [vehicle_class_id], references: [id])
+  vehicle_image_id          Int?          @unique
+  vehicle_image             Image?        @relation(fields: [vehicle_image_id], references: [id])
+  passation_images          Image[]       @relation("PassationImages")
+  maintenance_images        Image[]       @relation("MaintenanceImages")
 }
 
 model vehicleStatus {
@@ -190,12 +196,14 @@ model SupplierCategory {
 }
 
 model VehicleOwner {
-  id                     Int       @id @default(autoincrement())
-  first_name             String
-  last_name              String
-  cni_number             String
-  driver_licence__number String
-  vehicles               Vehicle[]
+  id                    Int       @id @default(autoincrement())
+  first_name            String
+  last_name             String
+  cni_number            String    @unique
+  driver_licence_number String
+  account_id            String
+  account               Account   @relation(fields: [account_id], references: [id])
+  vehicles              Vehicle[]
 }
 
 model Brand {
@@ -210,22 +218,24 @@ model Brand {
 }
 
 model Image {
-  id         Int     @id @default(autoincrement())
-  path       String
-  vehicle_id Int
-  vehicle    Vehicle @relation(fields: [vehicle_id], references: [id])
+  id                   Int       @id @default(autoincrement())
+  path                 String
+  vehiculeProfile      Vehicle?
+  passationVehicules   Vehicle[] @relation("PassationImages")
+  maintenanceVehicules Vehicle[] @relation("MaintenanceImages")
 }
 
 model CarModel {
-  id       Int    @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   name     String
   brand_id Int
-  brand    Brand  @relation(fields: [brand_id], references: [id])
+  brand    Brand     @relation(fields: [brand_id], references: [id])
+  vehicle  Vehicle[]
 }
 
 model carColor {
   id      Int       @id @default(autoincrement())
-  name    String
+  name    String    @unique
   vehicle Vehicle[]
 }
 

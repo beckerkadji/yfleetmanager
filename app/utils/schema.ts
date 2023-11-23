@@ -1,4 +1,6 @@
-import Joi from "joi";
+import BaseJoi from "joi"
+import JoiDate from '@joi/date';
+const Joi = BaseJoi.extend(JoiDate)
 
 export const schema = {
     email : Joi.string().email().required(),
@@ -17,7 +19,11 @@ export const schema = {
     description : Joi.string().required(),
     image : Joi.string().required(),
     stringText: Joi.string().required(),
+    gps_number: Joi.string().optional(),
     adminRegions: Joi.array().items(Joi.number()).required(),
+    date: Joi.date().format('YYYY-MM-DD').required(),
+    mileage: Joi.number().required(),
+    daily_recipe: Joi.number().required(),
     regions: Joi.array()
         .items(
             Joi.object({

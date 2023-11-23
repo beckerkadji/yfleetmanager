@@ -3,4 +3,4 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 
-export const supplierModel = prisma.supplier;
+export const SupplierModel = prisma.supplier;

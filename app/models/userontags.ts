@@ -3,4 +3,4 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 
-export const userTagModel = prisma.usersOnTags;
+export const UserTagModel = prisma.usersOnTags;

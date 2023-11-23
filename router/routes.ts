@@ -18,6 +18,8 @@ import { expressAuthentication } from './../app/middlewares/auth';
 // @ts-ignore - no great way to install types from subpackage
 const promiseAny = require('promise.any');
 import type { RequestHandler, Router } from 'express';
+const multer = require('multer');
+const upload = multer();
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
@@ -195,6 +197,17 @@ const models: TsoaRoute.Models = {
         "properties": {
             "brand_id": {"dataType":"double","required":true},
             "name": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "VehicleType.vehicleOwnerCreateField": {
+        "dataType": "refObject",
+        "properties": {
+            "first_name": {"dataType":"string","required":true},
+            "last_name": {"dataType":"string","required":true},
+            "cni_number": {"dataType":"string","required":true},
+            "driver_licence_number": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },
@@ -667,6 +680,49 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/vehicle',
+            authenticateMiddleware([{"Jwt":["read_vehicle"]}]),
+            upload.single('vehicle_image'),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController)),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController.prototype.addVehicle)),
+
+            function VehicleController_addVehicle(request: any, response: any, next: any) {
+            const args = {
+                    vehicle_image: {"in":"formData","name":"vehicle_image","required":true,"dataType":"file"},
+                    chassis_number: {"in":"formData","name":"chassis_number","required":true,"dataType":"string"},
+                    registration_number: {"in":"formData","name":"registration_number","required":true,"dataType":"string"},
+                    gps_number: {"in":"formData","name":"gps_number","required":true,"dataType":"string"},
+                    mileage: {"in":"formData","name":"mileage","required":true,"dataType":"string"},
+                    daily_recipe: {"in":"formData","name":"daily_recipe","required":true,"dataType":"string"},
+                    insurance_subscription_at: {"in":"formData","name":"insurance_subscription_at","required":true,"dataType":"string"},
+                    circulation_at: {"in":"formData","name":"circulation_at","required":true,"dataType":"string"},
+                    entry_fleet_at: {"in":"formData","name":"entry_fleet_at","required":true,"dataType":"string"},
+                    currency_id: {"in":"formData","name":"currency_id","required":true,"dataType":"string"},
+                    brand_id: {"in":"formData","name":"brand_id","required":true,"dataType":"string"},
+                    model_id: {"in":"formData","name":"model_id","required":true,"dataType":"string"},
+                    color_id: {"in":"formData","name":"color_id","required":true,"dataType":"string"},
+                    region_id: {"in":"formData","name":"region_id","required":true,"dataType":"string"},
+                    vehicle_owner_id: {"in":"formData","name":"vehicle_owner_id","required":true,"dataType":"string"},
+                    contract_type: {"in":"formData","name":"contract_type","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new VehicleController();
+
+
+              const promise = controller.addVehicle.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.get('/vehicle/brand',
             authenticateMiddleware([{"Jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(VehicleController)),
@@ -674,6 +730,7 @@ export function RegisterRoutes(app: Router) {
 
             function VehicleController_getBrand(request: any, response: any, next: any) {
             const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -764,6 +821,59 @@ export function RegisterRoutes(app: Router) {
 
 
               const promise = controller.createModel.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/vehicle/vehicle-owner',
+            authenticateMiddleware([{"Jwt":["add_vehicle"]}]),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController)),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController.prototype.createOwnerVehicleModel)),
+
+            function VehicleController_createOwnerVehicleModel(request: any, response: any, next: any) {
+            const args = {
+                    body: {"in":"body","name":"body","required":true,"ref":"VehicleType.vehicleOwnerCreateField"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new VehicleController();
+
+
+              const promise = controller.createOwnerVehicleModel.apply(controller, validatedArgs as any);
+              promiseHandler(controller, promise, response, undefined, next);
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/vehicle/vehicle-owner',
+            authenticateMiddleware([{"Jwt":[]}]),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController)),
+            ...(fetchMiddlewares<RequestHandler>(VehicleController.prototype.getVehicleOwner)),
+
+            function VehicleController_getVehicleOwner(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+
+                const controller = new VehicleController();
+
+
+              const promise = controller.getVehicleOwner.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);

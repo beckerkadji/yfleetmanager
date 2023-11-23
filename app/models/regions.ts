@@ -3,4 +3,4 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 
-export const regionModel = prisma.region;
+export const RegionModel = prisma.region;

@@ -10,6 +10,8 @@ import {CITY_LIST, CityModel} from '../app/models/city';
 import {Driver_TYPE, DriverTypeModel} from '../app/models/driver_type';
 import {GRADE_TYPE, GradeModel} from '../app/models/grade';
 import {CURRENCY_HR, CURRENCY_LIST, CurrencyModel} from "../app/models/currency";
+import {CarColorModel, COLOR_LIST} from "../app/models/carcolor";
+import {carModel} from "../app/models/carmodel";
 dotenv.config()
 
 
@@ -23,6 +25,11 @@ const currency_data = (Object.keys(CURRENCY_LIST) as Array<keyof typeof CURRENCY
 
 //Role data for seeding
 const role_data: Prisma.RoleCreateInput[] = Object.keys(USER_ROLE)
+    .filter(x => !(parseInt(x) >= 0))
+    .map(name => ({name}))
+
+//color data for seeding
+const color_data: Prisma.carColorCreateInput[] = Object.keys(COLOR_LIST)
     .filter(x => !(parseInt(x) >= 0))
     .map(name => ({name}))
 
@@ -76,6 +83,23 @@ async function main() {
             console.log(`Role created with id ${role.id}`);
         } else {
             console.log(`Role already exists:  ${u.name}`);
+        }
+    }
+
+    for(const co of color_data){
+        // Vérifier si la couleur existe déjà
+        const existingColor = await CarColorModel.findUnique({
+            where: {
+                name: co.name // Assurez-vous que 'name' est le champ d'unicité dans votre modèle
+            }
+        });
+        // Si la couleur n'existe pas, l'insérer
+        if (!existingColor) {
+            console.log("Seeding Color:", co.name);
+            const color = await CarColorModel.create({ data: co });
+            console.log(`Color created with id ${color.id}`);
+        } else {
+            console.log(`Color already exists:  ${co.name}`);
         }
     }
 

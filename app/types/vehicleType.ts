@@ -1,25 +1,20 @@
-import { ROLE_HR } from "../models/role"
-import { defaultEmail } from "./defaults/email.types"
-import { defaultFisrtName } from "./defaults/firstName.type"
-import { defaultLastName } from "./defaults/lastName.type"
-import { defaultOtp } from "./defaults/otp.type"
-import { defaultPhone } from "./defaults/phone.type"
-import {defaultRegion} from "./defaults/region.type";
-
 declare namespace VehicleType {
     export interface vehicleCreateFields {
-        brand_id : number,
-        model_id: number,
+        brand_id : string,
+        model_id: string,
         chassis_number : string,
-        color_id: number
-        gps_number?: string
-        registration_number: string
-        insurance_subscription_at: Date
+        color_id: string,
+        gps_number?: string,
+        registration_number: string,
+        insurance_subscription_at: Date,
         circulation_at : Date,
         entry_fleet_at: Date,
-        mileage: number,
-        daily_recipe: number,
-        currency_id: number,
+        contract_type: string,
+        mileage: string,
+        daily_recipe: string,
+        currency_id: string,
+        vehicle_owner_id: string,
+        region_id: string
     }
     export interface brandCreate {
         name: string
@@ -30,8 +25,11 @@ declare namespace VehicleType {
         name: string
     }
 
-    export interface modelCreate {
-
+    export interface vehicleOwnerCreateField{
+        first_name: string
+        last_name: string
+        cni_number: string
+        driver_licence_number: string
     }
 }
 export default VehicleType
