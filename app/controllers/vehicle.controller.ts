@@ -1,4 +1,4 @@
-import {Body, FormField, Get, Post, Request, Route, Security, Tags, UploadedFile} from "tsoa";
+import {Body, FormField, Path, Get, Post, Request, Route, Security, Tags, UploadedFiles, UploadedFile} from "tsoa";
 import {AUTHORIZATION, IResponse, My_Controller} from "./controller";
 import {ResponseHandler} from "../../src/config/responseHandler";
 import code from "../../src/config/code";
@@ -12,6 +12,10 @@ import express from "express";
 import {UserModel} from "../models/user";
 import {VehicleOwnerModel} from "../models/vehicleowner";
 import {RegionModel} from "../models/regions";
+import {VehicleTypeModel} from "../models/vehicle_type";
+import {CarColorModel} from "../models/carcolor";
+import {VehicleContractTypeModel} from "../models/vehicle_contract_type";
+import {CurrencyModel} from "../models/currency";
 
 const response = new ResponseHandler()
 
@@ -20,37 +24,61 @@ const response = new ResponseHandler()
 
 export class VehicleController extends My_Controller {
     @Security(AUTHORIZATION.TOKEN, [PERMISSION.READ_VEHICLE])
-    @Get("")
+    @Get("/by/{region_id}")
     public async index(
+        @Path() region_id: number,
+        @Request() request: express.Request
     ): Promise<IResponse> {
         try {
-            let listVehicle = await VehicleModel.findMany({
-                include: {
-                    region: true,
-                    vehicle_image: {
-                        select: {
-                            path: true
+            let accountId =  await this.getAccoundId(request)
+            if(!accountId){
+                return response.liteResponse(code.FAILURE, 'Account not provided')
+            }else{
+                let regions = await RegionModel.findFirst({
+                    where:{
+                        account_id: accountId,
+                        id: region_id
+                    }
+                })
+                if(!regions)
+                    return response.liteResponse(code.FAILURE, 'regions not found', null)
+
+                let found= await VehicleModel.findMany({
+                    include: {
+                        region: true,
+                        vehicle_image: {
+                            select: {
+                                path: true
+                            }
+                        },
+                        owner: true,
+                        color: true,
+                        brand: true,
+                        model: true,
+                        images_presentation: {
+                            select: {
+                                path: true
+                            }
                         }
                     },
-                    owner: true,
-                    color: true,
-                    brand: true,
-                    model: true,
-                }
-            });
-            if(!listVehicle)
-                return response.liteResponse(code.FAILD, "Error occurred during Finding ! Try again", null)
+                    where : {
+                        region_id,
+                    }
+                });
+                if(!found)
+                    return response.liteResponse(code.FAILD, "Error occurred during Finding ! Try again", null)
 
-            return response.liteResponse(code.SUCCESS, "Success !", listVehicle)
+                return response.liteResponse(code.SUCCESS, "Success !", found)
+            }
         }catch(e){
             return response.catchHandler(e)
         }
     }
 
-    @Security(AUTHORIZATION.TOKEN, [PERMISSION.READ_VEHICLE])
+    @Security(AUTHORIZATION.TOKEN, [PERMISSION.ADD_VEHICLE])
     @Post("")
     public async addVehicle(
-        @UploadedFile() vehicle_image: Express.Multer.File,
+        @UploadedFiles() images: Express.Multer.File[],
         @FormField() chassis_number: string,
         @FormField() registration_number: string,
         @FormField() gps_number: string,
@@ -65,7 +93,8 @@ export class VehicleController extends My_Controller {
         @FormField() color_id: string,
         @FormField() region_id: string,
         @FormField() vehicle_owner_id: string,
-        @FormField() contract_type: string,
+        @FormField() contract_type_id: string,
+        @FormField() vehicle_type_id: string,
         @Request() request: express.Request
     ): Promise<IResponse> {
         try {
@@ -84,14 +113,14 @@ export class VehicleController extends My_Controller {
                color_id,
                region_id,
                vehicle_owner_id,
-               contract_type,
+                contract_type_id,
+                vehicle_type_id
             }
             const validate = this.validate(vehicleCreateSchema, body)
             if(validate !== true)
                 return response.liteResponse(code.VALIDATION_ERROR, "Validation Error !", validate)
 
             let accountId = await this.getAccoundId(request)
-
 
             if(!accountId){
                 return response.liteResponse(code.FAILURE, 'Account not provided')
@@ -107,40 +136,58 @@ export class VehicleController extends My_Controller {
                 let registrationNumber = await VehicleModel.findFirst({where:{registration_number: body.registration_number}})
                 if(registrationNumber) return response.liteResponse(code.FAILURE, 'Registration number already exist')
 
-                let regions = await RegionModel.findMany({
+                let regions = await RegionModel.findFirst({
                     where:{
                         account_id: accountId,
                         id: parseInt(region_id)
                     }
                 })
-                if(!regions || regions.length == 0)
+                if(!regions)
                     return response.liteResponse(code.FAILURE, "Unknown region provided", null)
 
+
                 //upload profile vehicle image
-                let res = await this.uploadFile(vehicle_image)
-                console.log('res',res)
+                let res: any[] = await this.uploadFile(images)
+                const imagePaths: {path: string, height: number, width: number, size: number, format?: string}[] = res.map(image => (
+                    {
+                        path: image.Key,
+                        height: image.metadata.height,
+                        width: image.metadata.width,
+                        size: image.metadata.size,
+                        format: image.metadata.format
+                    }));
+                console.log(imagePaths)
+                return response.liteResponse(5000, 'message', null)
                 let create = await VehicleModel.create({
                     data: {
-                        chassis_number: body.chassis_number,
-                        registration_number: body.registration_number,
-                        gps_number: body.gps_number,
+                        chassis_number: body.chassis_number.toLowerCase(),
+                        registration_number: body.registration_number.toLowerCase(),
+                        gps_number: body.gps_number.toLowerCase(),
                         mileage: parseInt(body.mileage),
                         status: VEHICLE_STATUS.AVAILABLE,
                         daily_recipe: parseInt(body.daily_recipe),
-                        insurance_subscription_at: body.insurance_subscription_at,
-                        circulation_at : body.circulation_at,
-                        entry_fleet_at: body.entry_fleet_at,
+                        insurance_subscription_at: new Date(body.insurance_subscription_at),
+                        circulation_at : new Date(body.circulation_at),
+                        entry_fleet_at: new Date(body.entry_fleet_at),
                         currency:{connect:{id: parseInt(body.currency_id)}},
                         brand:{connect:{id: parseInt(body.brand_id)}},
                         model:{connect:{id: parseInt(body.model_id)}},
                         color: {connect:{id: parseInt(body.color_id)}},
                         region: {connect:{id: parseInt(body.region_id)}},
                         owner: {connect:{id: parseInt(body.vehicle_owner_id)}},
-                        contract_type: body.contract_type,
+                        vehicle_type: {connect: {id: parseInt(body.vehicle_type_id)}},
+                        contract_type: {connect:{id: parseInt(body.contract_type_id)}},
                         vehicle_image:{
                             create: {
-                                path: res.key
+                                path: res[0].key,
+                                width: res[0].metadata.width,
+                                height: res[0].metadata.height,
+                                size: res[0].metadata.size,
+                                format: res[0].metadata.format
                             }
+                        },
+                        images_presentation:{
+                            create: imagePaths
                         }
                     }
                 })
@@ -153,6 +200,22 @@ export class VehicleController extends My_Controller {
             return response.catchHandler(e)
         }
     }
+
+    @Post('/images')
+    public async images(
+        @UploadedFiles() images: Express.Multer.File[],
+    ):Promise<IResponse> {
+        try {
+            console.log('images', images)
+            let res: any[] = await this.uploadFile(images)
+            const imagePaths: {path: string, metadata: any}[] = res.map(image => ({ path: image.Key , metadata: image.metadata}));
+            console.log(imagePaths)
+            return response.liteResponse(code.SUCCESS, 'success', imagePaths)
+        }catch(e){
+            return response.catchHandler(e)
+        }
+    }
+
 
     @Security(AUTHORIZATION.TOKEN)
     @Get("/brand")
@@ -176,7 +239,7 @@ export class VehicleController extends My_Controller {
                 if(!found)
                     return response.liteResponse(code.FAILD, "Error occurred during Finding ! Try again", null)
 
-                return response.liteResponse(code.SUCCESS, "Success !", found)
+                return response.liteResponse(code.SUCCESS, "Success !", found )
             }
 
         }catch(e){
@@ -185,11 +248,76 @@ export class VehicleController extends My_Controller {
     }
 
     @Security(AUTHORIZATION.TOKEN)
-    @Get("/model")
-    public async getModel(
+    @Get("/vehicle-type")
+    public async getVehicleType(
     ): Promise<IResponse> {
         try {
-            let found = await carModel.findMany();
+            let found = await VehicleTypeModel.findMany();
+            if(!found)
+                return response.liteResponse(code.FAILD, "Error occurred during Finding ! Try again", null)
+
+            return response.liteResponse(code.SUCCESS, "Success !", found )
+        }catch(e){
+            return response.catchHandler(e)
+        }
+    }
+
+    @Security(AUTHORIZATION.TOKEN)
+    @Get("/vehicle-contract-type")
+    public async getVehicleContractType(
+    ): Promise<IResponse> {
+        try {
+            let found = await VehicleContractTypeModel.findMany();
+            if(!found)
+                return response.liteResponse(code.FAILD, "Error occurred during Finding ! Try again", null)
+
+            return response.liteResponse(code.SUCCESS, "Success !", found )
+        }catch(e){
+            return response.catchHandler(e)
+        }
+    }
+
+    @Security(AUTHORIZATION.TOKEN)
+    @Get("/vehicle-color")
+    public async getVehicleColor(
+    ): Promise<IResponse> {
+        try {
+            let found = await CarColorModel.findMany();
+            if(!found)
+                return response.liteResponse(code.FAILD, "Error occurred during Finding ! Try again", null)
+
+            return response.liteResponse(code.SUCCESS, "Success !", found )
+        }catch(e){
+            return response.catchHandler(e)
+        }
+    }
+
+    @Security(AUTHORIZATION.TOKEN)
+    @Get("/currency")
+    public async getCurrency(
+    ): Promise<IResponse> {
+        try {
+            let found = await CurrencyModel.findMany();
+            if(!found)
+                return response.liteResponse(code.FAILD, "Error occurred during Finding ! Try again", null)
+
+            return response.liteResponse(code.SUCCESS, "Success !", found )
+        }catch(e){
+            return response.catchHandler(e)
+        }
+    }
+
+    @Security(AUTHORIZATION.TOKEN)
+    @Get("/model/{brand_id}")
+    public async getModel(
+        @Path() brand_id: number
+    ): Promise<IResponse> {
+        try {
+            let found = await carModel.findMany({
+                where: {
+                    brand_id
+                }
+            });
             if(!found)
                 return response.liteResponse(code.FAILD, "Error occurred during Finding ! Try again", null)
 
@@ -236,7 +364,7 @@ export class VehicleController extends My_Controller {
                     }
                 })
                 if(!create)
-                    return response.liteResponse(code.FAILURE, "error occured , try again !")
+                    return response.liteResponse(code.FAILURE, "error occurred, try again !")
                 return response.liteResponse(code.SUCCESS, 'success',create)
             }
         }catch (e){

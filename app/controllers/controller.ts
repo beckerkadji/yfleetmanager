@@ -6,9 +6,7 @@ import {USER_ROLE} from "../models/role";
 import {TokenModel} from "../models/token";
 import AWS from "aws-sdk"
 import * as stream from "stream";
-import express from "express";
-import {S3} from "@aws-sdk/client-s3";
-
+import sharp from "sharp"
 
 AWS.config.update({
     accessKeyId: process.env.AWSACCESSKEYID,
@@ -17,9 +15,6 @@ AWS.config.update({
 })
 
 const s3 = new AWS.S3();
-
-const s3Client = new S3({region: 'us-west-2'});
-
 
 export enum AUTHORIZATION  {
     TOKEN = "Jwt"   
@@ -132,21 +127,35 @@ export class My_Controller extends Controller {
      * @param file 
      * @returns Array of url for multiple upload file or url for single file upload
      */
-    public async uploadFile (file : Express.Multer.File) : Promise<any> {
+    public async uploadFile (file : Express.Multer.File[] | Express.Multer.File ) : Promise<any> {
 
         if (Array.isArray(file)){
             const urls : any = [];
             for (const item of file){
+                let metadataImages: any
+                sharp(item.buffer).metadata().then(metadata => {
+                    const {width, height } = metadata
+                    metadataImages = metadata
+                }).catch(err => {
+                    console.error('Erreur lors de la récupération des informations de taille de l\'image:', err);
+                })
                 const newPath = await this.ImageUploadMethod(item)
-                urls.push(newPath)
+                urls.push({...newPath, metadata: metadataImages})
             }
 
             return urls
         }else {
-            return await this.ImageUploadMethod(file);
+            let metadataImages: any
+            sharp(file.buffer).metadata().then(metadata => {
+                const {width, height } = metadata
+                metadataImages = metadata
+            }).catch(err => {
+                console.error('Erreur lors de la récupération des informations de taille de l\'image:', err);
+            })
+            const res = await this.ImageUploadMethod(file)
+            return {res, metadata: metadataImages};
         }
-
-    }  
+    }
 
     private async ImageUploadMethod(file : Express.Multer.File) : Promise<any> {
 
@@ -167,9 +176,8 @@ export class My_Controller extends Controller {
                         console.warn(error);
                         rejects(error)
                     } else {
-                        console.log();
                         console.log("** File Upload (Promise)");
-                        console.log("* public_id for the uploaded image is generated AWS service.");
+                        console.log("*Finish ! public_id for the uploaded image is generated AWS service.");
                         // let url = result?.secure_url
                         resolve(result)
                     }

@@ -1,4 +1,4 @@
-import {Body, Get, Post, Route, Tags, Security} from "tsoa";
+import {Body, Get, Post, Route, Tags, Security, Request} from "tsoa";
 import {  AUTHORIZATION, IResponse, My_Controller } from "./controller";
 import bcrypt from "bcryptjs"
 import { ResponseHandler } from "../../src/config/responseHandler";
@@ -11,6 +11,7 @@ import AccountType from "../types/accountType";
 import {accountCreateSchema} from "../validations/account.validation";
 import {SALT_ROUND, UserModel} from "../models/user";
 import {right_permission, UserPermissionModel} from "../models/user_permission";
+import {VehicleController} from "./vehicle.controller";
 
 const response = new ResponseHandler()
 
@@ -79,7 +80,7 @@ export class AccountController extends My_Controller {
                     regions:{
                         createMany: {
                             data: body.regions
-                        }
+                        },
                     },
                     owner: {
                         create: {
@@ -89,6 +90,7 @@ export class AccountController extends My_Controller {
                     }
                 },
                 select : {
+                    id: true,
                     owner: {
                         select:{
                             id: true,
@@ -103,6 +105,21 @@ export class AccountController extends My_Controller {
                 return response.liteResponse(code.FAILURE, "An error occurred, on user creation. Retry later!", null)
             }else {
 
+                //connecte user to regions
+                let userId = account.owner.id;
+                let regionIds = account.regions.map(region => ({ id: region.id }));
+                let connect = await UserModel.update({
+                    where: {
+                        id: userId
+                    },
+                    data: {
+                        regions:{
+                            connect: regionIds
+                        }
+                    }
+                })
+                if(!connect)
+                    return response.liteResponse(code.FAILURE,'Error occurred when connect regions to this user', null)
                 //generate token connexion email for this owner
                 let tokenUser = await this.authCtrl.generate_token(account.owner.id, account.owner.email);
 

@@ -6,13 +6,17 @@ export enum COLOR_LIST {
     ORANGE = 1,
     NOIR = 2,
     BLANC = 3,
-    BLEU = 4
+    BLEU = 4,
+    ROUGE = 5,
+    JAUNE = 6,
 }
 
 export enum COLOR_HR {
     ORANGE = "orange",
     NOIR = "noir",
     BLANC = "blanc",
-    BLEU = "bleu"
+    BLEU = "bleu",
+    ROUGE = "rouge",
+    JAUNE = "jaune"
 }
 export const CarColorModel = prisma.carColor;

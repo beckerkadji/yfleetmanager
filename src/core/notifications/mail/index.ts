@@ -60,7 +60,7 @@ class Mailer {
             case "register" :
                 return 4529408 || process.env.REGISTER_TEMPLATE;
             default :
-                throw new Error("Unknow modelName")
+                throw new Error("Unknown modelName")
         }
     
     }

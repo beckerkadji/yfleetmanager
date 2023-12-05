@@ -12,6 +12,9 @@ import {GRADE_TYPE, GradeModel} from '../app/models/grade';
 import {CURRENCY_HR, CURRENCY_LIST, CurrencyModel} from "../app/models/currency";
 import {CarColorModel, COLOR_LIST} from "../app/models/carcolor";
 import {carModel} from "../app/models/carmodel";
+import {VEHICLE_TYPE_LIST, VehicleTypeModel} from "../app/models/vehicle_type";
+import VehicleType from "../app/types/vehicleType";
+import {VEHICLE_CONTRACT_TYPE_LIST, VehicleContractTypeModel} from "../app/models/vehicle_contract_type";
 dotenv.config()
 
 
@@ -20,8 +23,18 @@ const currency_data = (Object.keys(CURRENCY_LIST) as Array<keyof typeof CURRENCY
     .filter(key => isNaN(Number(key)))
     .map(code => ({
         name: CURRENCY_HR[code],
-        country_code: code
+        country_code: code.toLowerCase()
     }));
+
+//Vehicle type data for seeding
+const vehicle_type_data:  Prisma.VehicleTypeCreateInput[] = Object.keys(VEHICLE_TYPE_LIST)
+    .filter(x => !(parseInt(x) >= 0))
+    .map(name => ({name: name.toLowerCase()}))
+
+//Vehicle contract type data for seeding
+const vehicle_contract_type_data:  Prisma.VehicleContractTypeCreateInput[] = Object.keys(VEHICLE_CONTRACT_TYPE_LIST)
+    .filter(x => !(parseInt(x) >= 0))
+    .map(name => ({name: name.toLowerCase()}))
 
 //Role data for seeding
 const role_data: Prisma.RoleCreateInput[] = Object.keys(USER_ROLE)
@@ -31,22 +44,22 @@ const role_data: Prisma.RoleCreateInput[] = Object.keys(USER_ROLE)
 //color data for seeding
 const color_data: Prisma.carColorCreateInput[] = Object.keys(COLOR_LIST)
     .filter(x => !(parseInt(x) >= 0))
-    .map(name => ({name}))
+    .map(name => ({name: name.toLowerCase()}))
 
 //City data for seeding
 const city_seeding: Prisma.CityCreateInput[] = Object.keys(CITY_LIST)
     .filter(x => !(parseInt(x) >= 0))
-    .map(name => ({name}))
+    .map(name => ({name: name.toLowerCase()}))
 
 //DriverType data for seeding
 const driverType_data: Prisma.DriverTypeCreateInput[] = Object.keys(Driver_TYPE)
     .filter(x => !(parseInt(x) >= 0))
-    .map(name => ({name}))
+    .map(name => ({name: name.toLowerCase()}))
 
 //Grade data for seeding
 const grade_data: Prisma.GradeCreateInput[] = Object.keys(GRADE_TYPE)
     .filter(x => !(parseInt(x) >= 0))
-    .map(name => ({name}))
+    .map(name => ({name: name.toLowerCase()}))
     
 async function main() {
 
@@ -83,6 +96,36 @@ async function main() {
             console.log(`Role created with id ${role.id}`);
         } else {
             console.log(`Role already exists:  ${u.name}`);
+        }
+    }
+
+    for(const vt of vehicle_type_data){
+        const existingVehicleType = await VehicleTypeModel.findUnique({
+            where: {
+                name: vt.name
+            }
+        });
+        if (!existingVehicleType) {
+            console.log("Seeding vehicle type:", vt.name);
+            const vehicle_type = await VehicleTypeModel.create({ data: vt });
+            console.log(`Vehicle type created with id ${vehicle_type.id}`);
+        } else {
+            console.log(`Vehicle type already exists:  ${vt.name}`);
+        }
+    }
+
+    for(const vct of vehicle_contract_type_data){
+        const existingVehicleContractType = await VehicleContractTypeModel.findUnique({
+            where: {
+                name: vct.name
+            }
+        });
+        if (!existingVehicleContractType) {
+            console.log("Seeding vehicle contract type:", vct.name);
+            const vehicle_contract_type = await VehicleContractTypeModel.create({ data: vct });
+            console.log(`Vehicle contract type created with id ${vehicle_contract_type.id}`);
+        } else {
+            console.log(`Vehicle contract type already exists:  ${vct.name}`);
         }
     }
 

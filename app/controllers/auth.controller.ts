@@ -39,7 +39,13 @@ export class AuthController extends My_Controller {
                     suspended: true,
                     account_id: true,
                     password: true,
-                    role: true
+                    role: true,
+                    regions:{
+                        select: {
+                            id: true,
+                            name: true
+                        }
+                    }
                 },
                 where: {email: body.email},
             })

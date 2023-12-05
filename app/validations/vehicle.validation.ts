@@ -32,5 +32,6 @@ export const vehicleCreateSchema = Joi.object({
     currency_id: schema.stringText,
     vehicle_owner_id: schema.stringText,
     region_id: schema.stringText,
-    contract_type: schema.stringText
+    contract_type_id: schema.stringText,
+    vehicle_type_id: schema.stringText
 })
