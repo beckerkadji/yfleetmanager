@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -46,7 +46,7 @@ model User {
   currency                 String?
   blocked_at               DateTime?
   suspended                Boolean           @default(false)
-  blocked_reason           String?
+  blocked_reason           String?           @db.Text
   verified_at              DateTime?
   deleted_at               DateTime?
   created_at               DateTime          @default(now())
@@ -294,7 +294,7 @@ model Token {
   id        Int      @id @default(autoincrement())
   userId    String
   user      User     @relation(fields: [userId], references: [id], name: "token_user_ship")
-  jwt       String
+  jwt       String   @db.Text
   expireIn  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

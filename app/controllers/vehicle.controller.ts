@@ -157,7 +157,7 @@ export class VehicleController extends My_Controller {
                         format: image.metadata.format
                     }));
                 console.log(imagePaths)
-                return response.liteResponse(5000, 'message', null)
+                return response.liteResponse(5000, 'message', imagePaths)
                 let create = await VehicleModel.create({
                     data: {
                         chassis_number: body.chassis_number.toLowerCase(),

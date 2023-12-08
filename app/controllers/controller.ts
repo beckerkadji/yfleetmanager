@@ -137,7 +137,7 @@ export class My_Controller extends Controller {
                     const {width, height } = metadata
                     metadataImages = metadata
                 }).catch(err => {
-                    console.error('Erreur lors de la récupération des informations de taille de l\'image:', err);
+                    console.error('Erreur lors de la récupération des metas données de l\'image:', err);
                 })
                 const newPath = await this.ImageUploadMethod(item)
                 urls.push({...newPath, metadata: metadataImages})
@@ -150,7 +150,7 @@ export class My_Controller extends Controller {
                 const {width, height } = metadata
                 metadataImages = metadata
             }).catch(err => {
-                console.error('Erreur lors de la récupération des informations de taille de l\'image:', err);
+                console.error('Erreur lors de la récupération des metas données de l\'image:', err);
             })
             const res = await this.ImageUploadMethod(file)
             return {res, metadata: metadataImages};
