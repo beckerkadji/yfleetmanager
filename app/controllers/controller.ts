@@ -153,7 +153,8 @@ export class My_Controller extends Controller {
                 console.error('Erreur lors de la récupération des metas données de l\'image:', err);
             })
             const res = await this.ImageUploadMethod(file)
-            return {res, metadata: metadataImages};
+            let key = res.key;
+            return {key, metadata: metadataImages};
         }
     }
 

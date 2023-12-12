@@ -5,6 +5,7 @@ import  {schema}  from "../utils/schema";
 export const driverCreateSchema = Joi.object({
         first_name: schema.stringText,
         last_name: schema.stringText,
+        email: schema.email,
         birthday: schema.gps_number,
         place_Birth: schema.stringText,
         phone: schema.stringText,
@@ -17,6 +18,7 @@ export const driverCreateSchema = Joi.object({
         country_licence_delivery: schema.stringText,
         expire_delivery_at: schema.stringText,
         issue_delivery_on: schema.stringText,
-        regionId: schema.stringText,
-        Vehicle_principal_id: schema.stringText
+        region_id: schema.stringText,
+        vehicle_principal_id: schema.stringTextOptional,
+        vehicle_interimaire_id: schema.stringTextOptional
 })

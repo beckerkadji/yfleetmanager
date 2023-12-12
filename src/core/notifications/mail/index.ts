@@ -59,6 +59,8 @@ class Mailer {
                 return 5310536 || process.env.CREATE_ACOUNT_TEMPLATE;
             case "register" :
                 return 4529408 || process.env.REGISTER_TEMPLATE;
+            case "createdriver" :
+                return 5433784
             default :
                 throw new Error("Unknown modelName")
         }

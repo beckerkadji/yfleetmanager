@@ -19,6 +19,7 @@ export const schema = {
     description : Joi.string().required(),
     image : Joi.string().required(),
     stringText: Joi.string().required(),
+    stringTextOptional: Joi.string().optional(),
     gps_number: Joi.string().optional(),
     adminRegions: Joi.array().items(Joi.number()).required(),
     date: Joi.date().format('YYYY-MM-DD').required(),

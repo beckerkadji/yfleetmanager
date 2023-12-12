@@ -33,7 +33,7 @@ export class AuthController extends My_Controller {
                     image: true,
                     verified_at: true,
                     created_at: true,
-                    regionId: true,
+                    region_id: true,
                     blocked_at: true,
                     blocked_reason: true,
                     suspended: true,

@@ -434,7 +434,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/vehicle',
-            authenticateMiddleware([{"Jwt":["read_vehicle"]}]),
+            authenticateMiddleware([{"Jwt":["add_vehicle"]}]),
             upload.array('images'),
             ...(fetchMiddlewares<RequestHandler>(VehicleController)),
             ...(fetchMiddlewares<RequestHandler>(VehicleController.prototype.addVehicle)),
@@ -942,7 +942,7 @@ export function RegisterRoutes(app: Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/driver',
-            authenticateMiddleware([{"Jwt":["read_driver"]}]),
+            authenticateMiddleware([{"Jwt":["add_driver"]}]),
             upload.single('image'),
             ...(fetchMiddlewares<RequestHandler>(DriverController)),
             ...(fetchMiddlewares<RequestHandler>(DriverController.prototype.addDrivers)),
@@ -952,6 +952,7 @@ export function RegisterRoutes(app: Router) {
                     image: {"in":"formData","name":"image","required":true,"dataType":"file"},
                     first_name: {"in":"formData","name":"first_name","required":true,"dataType":"string"},
                     last_name: {"in":"formData","name":"last_name","required":true,"dataType":"string"},
+                    email: {"in":"formData","name":"email","required":true,"dataType":"string"},
                     birthday: {"in":"formData","name":"birthday","required":true,"dataType":"string"},
                     place_Birth: {"in":"formData","name":"place_Birth","required":true,"dataType":"string"},
                     phone: {"in":"formData","name":"phone","required":true,"dataType":"string"},
@@ -964,11 +965,10 @@ export function RegisterRoutes(app: Router) {
                     country_licence_delivery: {"in":"formData","name":"country_licence_delivery","required":true,"dataType":"string"},
                     issue_delivery_on: {"in":"formData","name":"issue_delivery_on","required":true,"dataType":"string"},
                     expire_delivery_at: {"in":"formData","name":"expire_delivery_at","required":true,"dataType":"string"},
-                    regionId: {"in":"formData","name":"regionId","required":true,"dataType":"string"},
-                    brand_id: {"in":"formData","name":"brand_id","required":true,"dataType":"string"},
-                    model_id: {"in":"formData","name":"model_id","required":true,"dataType":"string"},
-                    Vehicle_principal_id: {"in":"formData","name":"Vehicle_principal_id","required":true,"dataType":"string"},
+                    region_id: {"in":"formData","name":"region_id","required":true,"dataType":"string"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    vehicle_principal_id: {"in":"formData","name":"vehicle_principal_id","dataType":"string"},
+                    vehicle_interimaire_id: {"in":"formData","name":"vehicle_interimaire_id","dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
