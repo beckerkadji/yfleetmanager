@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 import {Controller} from "tsoa";
-import cloudinary from "cloudinary";
+// import cloudinary from "cloudinary";
 import Mailer from "../../src/core/notifications/mail";
 import {USER_ROLE} from "../models/role";
 import {TokenModel} from "../models/token";
@@ -22,11 +22,11 @@ export enum AUTHORIZATION  {
 
 dotenv.config();
 
-cloudinary.v2.config({
-    cloud_name : process.env.CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret : process.env.CLOUNDINARY_API_SECRET
-})
+// cloudinary.v2.config({
+//     cloud_name : process.env.CLOUD_NAME,
+//     api_key: process.env.CLOUDINARY_API_KEY,
+//     api_secret : process.env.CLOUNDINARY_API_SECRET
+// })
 
 
 export interface IResponse {
